@@ -2,8 +2,13 @@ import { motion } from "framer-motion";
 import { ArrowDown, Terminal, Cpu, Code2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { personalInfo, socialLinks } from "@/data";
+import { useTextScramble } from "@/hooks/useTextScramble";
+import { Magnetic } from "@/components/Magnetic";
 
 const HeroSection = () => {
+  const { displayText: nameText, scramble: scrambleName } = useTextScramble(personalInfo.name);
+  const { displayText: roleText, scramble: scrambleRole } = useTextScramble(personalInfo.role);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-6">
       {/* Animated tech grid background */}
@@ -95,18 +100,22 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
+          onViewportEnter={scrambleName}
           className="text-5xl md:text-7xl font-bold tracking-tight mb-4 font-display"
         >
-          <span className="gradient-text">{personalInfo.name}</span>
+          <span className="gradient-text font-mono" onMouseEnter={scrambleName}>{nameText}</span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
+          onViewportEnter={scrambleRole}
           className="text-xl md:text-2xl text-neon-cyan/80 mb-2 font-mono font-medium"
         >
-          {"< "}{personalInfo.role}{" />"}
+          {"< "}
+          <span onMouseEnter={scrambleRole}>{roleText}</span>
+          {" />"}
         </motion.p>
 
         <motion.p
@@ -133,12 +142,16 @@ const HeroSection = () => {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="flex flex-wrap justify-center gap-4 mb-10"
         >
-          <Button size="lg" className="rounded-full px-8 font-display bg-primary text-primary-foreground neon-glow hover:shadow-neon-lg transition-all" asChild>
-            <a href="#projects">View My Work</a>
-          </Button>
-          <Button size="lg" variant="outline" className="rounded-full px-8 font-display neon-border" asChild>
-            <a href="#contact">Get In Touch</a>
-          </Button>
+          <Magnetic>
+            <Button size="lg" className="rounded-full px-8 font-display bg-primary text-primary-foreground neon-glow hover:shadow-neon-lg transition-all" asChild>
+              <a href="#projects">View My Work</a>
+            </Button>
+          </Magnetic>
+          <Magnetic>
+            <Button size="lg" variant="outline" className="rounded-full px-8 font-display neon-border" asChild>
+              <a href="#contact">Get In Touch</a>
+            </Button>
+          </Magnetic>
         </motion.div>
 
         <motion.div
@@ -148,16 +161,17 @@ const HeroSection = () => {
           className="flex justify-center gap-4"
         >
           {socialLinks.map(({ icon: Icon, href, label }) => (
-            <a
-              key={label}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-3 rounded-full glass neon-border hover:neon-glow transition-all hover:scale-110 text-foreground/60 hover:text-neon-cyan"
-              aria-label={label}
-            >
-              <Icon size={20} />
-            </a>
+            <Magnetic key={label}>
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 rounded-full glass neon-border hover:neon-glow transition-all hover:scale-110 text-foreground/60 hover:text-neon-cyan"
+                aria-label={label}
+              >
+                <Icon size={20} />
+              </a>
+            </Magnetic>
           ))}
         </motion.div>
       </div>
@@ -176,3 +190,4 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
+

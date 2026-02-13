@@ -2,6 +2,8 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ExternalLink, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTextScramble } from "@/hooks/useTextScramble";
+import { Magnetic } from "@/components/Magnetic";
 
 type Project = {
   title: string;
@@ -20,6 +22,8 @@ const filters = ["All", "Featured", "Full Stack", "AI/ML", "Algorithms", "Quantu
 
 const ProjectsSection = () => {
   const [active, setActive] = useState("All");
+  const { displayText, scramble } = useTextScramble("Things I've Built");
+
   const filtered = active === "All"
     ? projects
     : active === "Featured"
@@ -33,6 +37,7 @@ const ProjectsSection = () => {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          onViewportEnter={scramble}
           className="text-center mb-12"
         >
           <span className="inline-flex items-center gap-2 text-sm font-mono text-neon-cyan uppercase tracking-wider">
@@ -40,7 +45,9 @@ const ProjectsSection = () => {
             Projects
             <span className="w-8 h-px bg-neon-cyan/50" />
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text">Things I've Built</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text font-mono min-h-[1.2em]" onMouseEnter={scramble}>
+            {displayText}
+          </h2>
         </motion.div>
 
         {/* Filter tabs */}
@@ -60,16 +67,33 @@ const ProjectsSection = () => {
         </div>
 
         {/* Project grid */}
-        <motion.div layout className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <motion.div
+          layout
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+          variants={{
+            hidden: { opacity: 0 },
+            show: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.1
+              }
+            }
+          }}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+        >
           <AnimatePresence mode="popLayout">
             {filtered.slice(0, active === "All" ? 9 : filtered.length).map((project) => (
               <motion.div
                 key={project.title}
                 layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
+                variants={{
+                  hidden: { opacity: 0, y: 20, scale: 0.95 },
+                  show: { opacity: 1, y: 0, scale: 1 }
+                }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.4, type: "spring", stiffness: 100 }}
                 className="card-3d"
               >
                 <div className="card-3d-inner rounded-2xl glass neon-border overflow-hidden h-full flex flex-col holo-shine">
@@ -119,18 +143,22 @@ const ProjectsSection = () => {
 
                     <div className="flex gap-2 pt-2 border-t border-neon-cyan/10">
                       {project.demo && project.demo !== "#" && (
-                        <Button size="sm" variant="outline" className="rounded-full text-xs gap-1.5 flex-1 neon-border hover:text-neon-cyan" asChild>
-                          <a href={project.demo} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink size={14} /> Demo
-                          </a>
-                        </Button>
+                        <Magnetic>
+                          <Button size="sm" variant="outline" className="rounded-full text-xs gap-1.5 flex-1 neon-border hover:text-neon-cyan" asChild>
+                            <a href={project.demo} target="_blank" rel="noopener noreferrer">
+                              <ExternalLink size={14} /> Demo
+                            </a>
+                          </Button>
+                        </Magnetic>
                       )}
                       {project.github && (
-                        <Button size="sm" variant="ghost" className="rounded-full text-xs gap-1.5 flex-1 hover:text-neon-purple" asChild>
-                          <a href={project.github} target="_blank" rel="noopener noreferrer">
-                            <Github size={14} /> Code
-                          </a>
-                        </Button>
+                        <Magnetic>
+                          <Button size="sm" variant="ghost" className="rounded-full text-xs gap-1.5 flex-1 hover:text-neon-purple" asChild>
+                            <a href={project.github} target="_blank" rel="noopener noreferrer">
+                              <Github size={14} /> Code
+                            </a>
+                          </Button>
+                        </Magnetic>
                       )}
                     </div>
                   </div>
@@ -142,11 +170,13 @@ const ProjectsSection = () => {
 
         {active === "All" && projects.length > 9 && (
           <div className="mt-12 text-center">
-            <Button variant="outline" size="lg" className="rounded-full gap-2 neon-border hover:neon-glow" asChild>
-              <a href="https://github.com/tejastro123" target="_blank" rel="noopener noreferrer">
-                <Github size={18} /> View All {projects.length} Projects on GitHub
-              </a>
-            </Button>
+            <Magnetic>
+              <Button variant="outline" size="lg" className="rounded-full gap-2 neon-border hover:neon-glow" asChild>
+                <a href="https://github.com/tejastro123" target="_blank" rel="noopener noreferrer">
+                  <Github size={18} /> View All {projects.length} Projects on GitHub
+                </a>
+              </Button>
+            </Magnetic>
           </div>
         )}
       </div>
@@ -155,3 +185,4 @@ const ProjectsSection = () => {
 };
 
 export default ProjectsSection;
+

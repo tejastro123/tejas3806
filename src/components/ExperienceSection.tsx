@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTextScramble } from "@/hooks/useTextScramble";
 
 type TimelineItem = {
   type: "work" | "education";
@@ -18,6 +19,8 @@ const typeColors: Record<string, string> = {
 };
 
 const ExperienceSection = () => {
+  const { displayText, scramble } = useTextScramble("Experience & Education");
+
   return (
     <section id="experience" className="py-24 px-6 relative">
       <div className="container mx-auto max-w-3xl">
@@ -25,6 +28,7 @@ const ExperienceSection = () => {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          onViewportEnter={scramble}
           className="text-center mb-16"
         >
           <span className="inline-flex items-center gap-2 text-sm font-mono text-neon-orange uppercase tracking-wider">
@@ -32,24 +36,40 @@ const ExperienceSection = () => {
             Journey
             <span className="w-8 h-px bg-neon-orange/50" />
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text">Experience & Education</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text font-mono min-h-[1.2em]" onMouseEnter={scramble}>
+            {displayText}
+          </h2>
         </motion.div>
 
         <div className="relative">
           {/* Neon center line */}
           <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-neon-cyan/50 via-neon-purple/30 to-neon-green/50 -translate-x-1/2" />
 
-          <div className="space-y-12">
+          <motion.div
+            className="space-y-12"
+            variants={{
+              hidden: { opacity: 0 },
+              show: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.2
+                }
+              }
+            }}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+          >
             {experience.map((item, i) => {
               const isLeft = i % 2 === 0;
               const dotColor = typeColors[item.type] || "border-neon-cyan bg-neon-cyan";
               return (
                 <motion.div
                   key={item.title + item.org}
-                  initial={{ opacity: 0, x: isLeft ? -30 : 30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5 }}
+                  variants={{
+                    hidden: { opacity: 0, x: isLeft ? -30 : 30 },
+                    show: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 80 } }
+                  }}
                   className={`relative flex flex-col md:flex-row ${isLeft ? "md:flex-row" : "md:flex-row-reverse"} items-center gap-6`}
                 >
                   <div className={`hidden md:flex w-1/2 justify-${isLeft ? 'end' : 'start'} items-center`}>
@@ -86,7 +106,7 @@ const ExperienceSection = () => {
                 </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
@@ -94,3 +114,4 @@ const ExperienceSection = () => {
 };
 
 export default ExperienceSection;
+

@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { Code2, Lightbulb, Rocket, Coffee } from "lucide-react";
-
 import { personalInfo, about } from "@/data";
+import { useTextScramble } from "@/hooks/useTextScramble";
+import { Magnetic } from "@/components/Magnetic";
 
 const highlights = [
   { icon: Code2, title: "Clean Code", desc: "I write readable, maintainable, well-tested code." },
@@ -11,6 +12,8 @@ const highlights = [
 ];
 
 const AboutSection = () => {
+  const { displayText, scramble } = useTextScramble("Nice to meet you!");
+
   return (
     <section id="about" className="py-24 px-6 relative">
       <div className="container mx-auto max-w-5xl">
@@ -20,14 +23,15 @@ const AboutSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
+          onViewportEnter={scramble}
         >
           <span className="inline-flex items-center gap-2 text-sm font-mono text-neon-green uppercase tracking-wider">
             <span className="w-8 h-px bg-neon-green/50" />
             About Me
             <span className="w-8 h-px bg-neon-green/50" />
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text">
-            Nice to meet you! <span className="inline-block animate-float">👋</span>
+          <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text font-mono min-h-[1.2em]" onMouseEnter={scramble}>
+            {displayText} <span className="inline-block animate-float">👋</span>
           </h2>
         </motion.div>
 
@@ -72,15 +76,16 @@ const AboutSection = () => {
                 {about.funFacts.map((fact) => {
                   const Icon = fact.icon;
                   return (
-                    <div
-                      key={fact.text}
-                      className="flex items-center gap-3 p-3 rounded-2xl glass neon-border group cursor-default"
-                    >
-                      <div className="w-8 h-8 rounded-full bg-neon-cyan/10 border border-neon-cyan/20 flex items-center justify-center text-neon-cyan shrink-0 group-hover:scale-110 group-hover:shadow-neon transition-all">
-                        <Icon size={16} />
+                    <Magnetic key={fact.text}>
+                      <div
+                        className="flex items-center gap-3 p-3 rounded-2xl glass neon-border group cursor-default"
+                      >
+                        <div className="w-8 h-8 rounded-full bg-neon-cyan/10 border border-neon-cyan/20 flex items-center justify-center text-neon-cyan shrink-0 group-hover:scale-110 group-hover:shadow-neon transition-all">
+                          <Icon size={16} />
+                        </div>
+                        <span className="text-sm text-foreground/70">{fact.text}</span>
                       </div>
-                      <span className="text-sm text-foreground/70">{fact.text}</span>
-                    </div>
+                    </Magnetic>
                   );
                 })}
               </div>
@@ -89,14 +94,28 @@ const AboutSection = () => {
         </div>
 
         {/* Highlight cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16">
-          {highlights.map(({ icon: Icon, title, desc }, i) => (
+        <motion.div
+          className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16"
+          variants={{
+            hidden: { opacity: 0 },
+            show: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.1
+              }
+            }
+          }}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+        >
+          {highlights.map(({ icon: Icon, title, desc }) => (
             <motion.div
               key={title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.1 }}
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                show: { opacity: 1, y: 0 }
+              }}
               className="card-3d"
             >
               <div className="card-3d-inner p-5 rounded-2xl glass neon-border text-center group h-full">
@@ -108,10 +127,11 @@ const AboutSection = () => {
               </div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
 };
 
 export default AboutSection;
+
