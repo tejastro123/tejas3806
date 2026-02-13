@@ -42,23 +42,29 @@ const ExperienceSection = () => {
                   className={`relative flex flex-col md:flex-row ${isLeft ? "md:flex-row" : "md:flex-row-reverse"
                     } items-center gap-6`}
                 >
-                  {/* Card */}
-                  <div className={`flex-1 ${isLeft ? "md:text-right" : "md:text-left"}`}>
-                    <div className="glass rounded-2xl p-5 inline-block text-left hover:shadow-lg transition-all">
-                      <span className="text-xs font-medium text-primary">{item.date}</span>
-                      <h3 className="font-display font-bold text-lg mt-1">{item.title}</h3>
-                      <p className="text-sm text-muted-foreground font-medium">{item.org}</p>
-                      <p className="text-sm text-muted-foreground mt-2 leading-relaxed">{item.description}</p>
-                    </div>
+                  <div className={`hidden md:flex w-1/2 justify-${isLeft ? 'end' : 'start'} items-center`}>
+                    <div className="text-sm font-medium text-muted-foreground">{item.date}</div>
+                    <div className={`w-8 h-[1px] bg-border mx-4 ${isLeft ? '' : 'order-first'}`}></div>
                   </div>
 
-                  {/* Icon */}
-                  <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center shrink-0 z-10 shadow-lg">
-                    {item.type === "work" ? <Briefcase size={18} /> : <GraduationCap size={18} />}
-                  </div>
+                  <div className="absolute left-4 md:left-1/2 w-4 h-4 -ml-2 rounded-full border-2 border-primary bg-background z-10"></div>
 
-                  {/* Spacer */}
-                  <div className="flex-1 hidden md:block" />
+                  <div className={`w-full md:w-1/2 pl-12 md:pl-0 ${isLeft ? 'md:pr-12 md:text-right' : 'md:pl-12'}`}>
+                    <div className="md:hidden text-sm font-semibold text-primary mb-1">{item.date}</div>
+                    <h3 className="text-xl font-bold">{item.title}</h3>
+                    <div className="text-primary font-medium mb-1">{item.org}</div>
+                    {item.location && <div className="text-xs text-muted-foreground mb-3">{item.location}</div>}
+                    <p className="text-muted-foreground mb-3">{item.description}</p>
+                    {item.skills && (
+                      <div className={`flex flex-wrap gap-2 ${isLeft ? 'md:justify-end' : 'md:justify-start'}`}>
+                        {item.skills.map(skill => (
+                          <span key={skill} className="px-2 py-0.5 rounded text-[10px] uppercase tracking-wider bg-muted text-muted-foreground">
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </motion.div>
               );
             })}

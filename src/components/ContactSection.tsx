@@ -121,13 +121,13 @@ const ContactSection = () => {
             </div>
 
             <div className="flex gap-3">
-              {socialLinks.map(({ icon: Icon, href, label }) => (
+              {socialLinks.map(({ icon: Icon, href, label, color }) => (
                 <a
                   key={label}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 rounded-full border border-border hover:border-primary hover:text-primary transition-all hover:scale-110"
+                  className={`p-3 rounded-full border border-border transition-all hover:scale-110 ${color || "hover:border-primary hover:text-primary"}`}
                   aria-label={label}
                 >
                   <Icon size={20} />

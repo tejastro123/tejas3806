@@ -27,11 +27,27 @@ const HeroSection = () => {
           </span>
         </motion.div>
 
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="mb-8 relative inline-block"
+        >
+          <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-primary/20 p-1 bg-background/50 backdrop-blur-sm">
+            <img
+              src={personalInfo.avatar}
+              alt={personalInfo.name}
+              className="w-full h-full rounded-full object-cover"
+            />
+          </div>
+          <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/20 to-transparent animate-pulse" />
+        </motion.div>
+
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.15 }}
-          className="text-5xl md:text-7xl font-bold mb-4 tracking-tight"
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="text-5xl md:text-7xl font-bold tracking-tight mb-4 font-display"
         >
           <span className="gradient-text">{personalInfo.name}</span>
         </motion.h1>
@@ -40,7 +56,7 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="text-xl md:text-2xl text-muted-foreground mb-3 font-display"
+          className="text-xl md:text-2xl text-foreground/80 mb-2 font-display font-medium"
         >
           {personalInfo.role}
         </motion.p>
@@ -48,8 +64,17 @@ const HeroSection = () => {
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.35 }}
+          className="text-lg text-primary/80 mb-6 italic"
+        >
+          {personalInfo.bio.tagline}
+        </motion.p>
+
+        <motion.p
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-lg text-muted-foreground/80 mb-8 max-w-lg mx-auto"
+          className="text-lg text-muted-foreground mb-8 max-w-lg mx-auto leading-relaxed"
         >
           {personalInfo.bio.short}
         </motion.p>
@@ -74,13 +99,13 @@ const HeroSection = () => {
           transition={{ delay: 0.7 }}
           className="flex justify-center gap-4"
         >
-          {socialLinks.map(({ icon: Icon, href, label }) => (
+          {socialLinks.map(({ icon: Icon, href, label, color }) => (
             <a
               key={label}
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-3 rounded-full border border-border hover:border-primary hover:text-primary transition-all hover:scale-110"
+              className={`p-3 rounded-full border border-border transition-all hover:scale-110 ${color || "hover:border-primary hover:text-primary"}`}
               aria-label={label}
             >
               <Icon size={20} />

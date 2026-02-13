@@ -61,15 +61,21 @@ const AboutSection = () => {
 
             <div className="space-y-2">
               <p className="text-sm font-display font-semibold text-foreground mb-3">Fun facts about me:</p>
-              <div className="flex flex-wrap gap-2">
-                {about.funFacts.map((fact) => (
-                  <span
-                    key={fact}
-                    className="px-3 py-1.5 rounded-full bg-muted text-sm text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors cursor-default"
-                  >
-                    {fact}
-                  </span>
-                ))}
+              <div className="flex flex-col gap-3">
+                {about.funFacts.map((fact) => {
+                  const Icon = fact.icon;
+                  return (
+                    <div
+                      key={fact.text}
+                      className="flex items-center gap-3 p-3 rounded-2xl bg-muted/50 hover:bg-primary/5 transition-colors group cursor-default"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0 group-hover:scale-110 transition-transform">
+                        <Icon size={16} />
+                      </div>
+                      <span className="text-sm text-muted-foreground">{fact.text}</span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </motion.div>
