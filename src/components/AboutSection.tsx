@@ -12,7 +12,7 @@ const highlights = [
 
 const AboutSection = () => {
   return (
-    <section id="about" className="py-24 px-6">
+    <section id="about" className="py-24 px-6 relative">
       <div className="container mx-auto max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -21,14 +21,18 @@ const AboutSection = () => {
           transition={{ duration: 0.5 }}
           className="text-center mb-16"
         >
-          <span className="text-sm font-medium text-primary uppercase tracking-wider">About Me</span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-2">
+          <span className="inline-flex items-center gap-2 text-sm font-mono text-neon-green uppercase tracking-wider">
+            <span className="w-8 h-px bg-neon-green/50" />
+            About Me
+            <span className="w-8 h-px bg-neon-green/50" />
+          </span>
+          <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text">
             Nice to meet you! <span className="inline-block animate-float">👋</span>
           </h2>
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-12 items-center">
-          {/* Photo placeholder */}
+          {/* Avatar */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -36,10 +40,17 @@ const AboutSection = () => {
             transition={{ duration: 0.5 }}
             className="relative"
           >
-            <div className="aspect-square rounded-3xl bg-gradient-to-br from-primary/20 via-secondary/20 to-accent/20 flex items-center justify-center border-2 border-dashed border-border">
-              <span className="text-6xl">🧑‍💻</span>
+            <div className="aspect-square rounded-3xl glass neon-border overflow-hidden relative group">
+              <img
+                src={personalInfo.avatar}
+                alt={personalInfo.name}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              {/* Scanline overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
+              <div className="absolute inset-0 scanline" />
             </div>
-            <div className="absolute -bottom-4 -right-4 px-4 py-2 rounded-xl glass shadow-lg text-sm font-medium">
+            <div className="absolute -bottom-4 -right-4 px-4 py-2 rounded-xl glass-strong neon-border shadow-neon text-sm font-mono text-neon-green">
               📍 {personalInfo.location}
             </div>
           </motion.div>
@@ -51,28 +62,24 @@ const AboutSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
+            <p className="text-lg text-foreground/80 mb-6 leading-relaxed">
               {personalInfo.bio.long}
-            </p>
-            <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-              When I'm not coding, you'll find me exploring new technologies, contributing to open
-              source projects, or sharing what I've learned with the community.
             </p>
 
             <div className="space-y-2">
-              <p className="text-sm font-display font-semibold text-foreground mb-3">Fun facts about me:</p>
+              <p className="text-sm font-mono font-semibold text-neon-cyan mb-3">// fun_facts</p>
               <div className="flex flex-col gap-3">
                 {about.funFacts.map((fact) => {
                   const Icon = fact.icon;
                   return (
                     <div
                       key={fact.text}
-                      className="flex items-center gap-3 p-3 rounded-2xl bg-muted/50 hover:bg-primary/5 transition-colors group cursor-default"
+                      className="flex items-center gap-3 p-3 rounded-2xl glass neon-border group cursor-default"
                     >
-                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0 group-hover:scale-110 transition-transform">
+                      <div className="w-8 h-8 rounded-full bg-neon-cyan/10 border border-neon-cyan/20 flex items-center justify-center text-neon-cyan shrink-0 group-hover:scale-110 group-hover:shadow-neon transition-all">
                         <Icon size={16} />
                       </div>
-                      <span className="text-sm text-muted-foreground">{fact.text}</span>
+                      <span className="text-sm text-foreground/70">{fact.text}</span>
                     </div>
                   );
                 })}
@@ -90,13 +97,15 @@ const AboutSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.1 }}
-              className="p-5 rounded-2xl glass text-center hover:shadow-lg transition-all group"
+              className="card-3d"
             >
-              <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                <Icon size={22} />
+              <div className="card-3d-inner p-5 rounded-2xl glass neon-border text-center group h-full">
+                <div className="w-12 h-12 rounded-xl bg-neon-purple/10 border border-neon-purple/20 text-neon-purple flex items-center justify-center mx-auto mb-3 group-hover:scale-110 group-hover:neon-glow-purple transition-all">
+                  <Icon size={22} />
+                </div>
+                <h3 className="font-display font-semibold text-sm mb-1 text-foreground">{title}</h3>
+                <p className="text-xs text-muted-foreground">{desc}</p>
               </div>
-              <h3 className="font-display font-semibold text-sm mb-1">{title}</h3>
-              <p className="text-xs text-muted-foreground">{desc}</p>
             </motion.div>
           ))}
         </div>

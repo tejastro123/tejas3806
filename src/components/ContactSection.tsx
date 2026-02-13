@@ -1,54 +1,49 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Send, Github, Linkedin, Mail, MapPin } from "lucide-react";
+import { Mail, MapPin, Send, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/hooks/use-toast";
-import { z } from "zod";
-
-const contactSchema = z.object({
-  name: z.string().trim().min(1, "Name is required").max(100),
-  email: z.string().trim().email("Invalid email address").max(255),
-  message: z.string().trim().min(1, "Message is required").max(2000),
-});
-
 import { personalInfo, socialLinks } from "@/data";
+import { supabase } from "@/lib/supabaseClient";
 
 const ContactSection = () => {
-  const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [isSending, setIsSending] = useState(false);
+  const [isSent, setIsSent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrors({});
+    setIsSending(true);
+    setError(null);
 
-    const result = contactSchema.safeParse(form);
-    if (!result.success) {
-      const fieldErrors: Record<string, string> = {};
-      result.error.issues.forEach((issue) => {
-        fieldErrors[issue.path[0] as string] = issue.message;
-      });
-      setErrors(fieldErrors);
-      return;
+    try {
+      const { error: submitError } = await supabase
+        .from("messages")
+        .insert([
+          {
+            name: formData.name,
+            email: formData.email,
+            message: formData.message,
+          },
+        ]);
+
+      if (submitError) throw submitError;
+
+      setIsSent(true);
+      setFormData({ name: "", email: "", message: "" });
+      // Reset success message after 5 seconds
+      setTimeout(() => setIsSent(false), 5000);
+    } catch (err: any) {
+      console.error("Error sending message:", err);
+      setError("Failed to send message. Please try again or use the email link below.");
+    } finally {
+      setIsSending(false);
     }
-
-    setLoading(true);
-    // TODO: Wire up to Supabase Edge Function
-    await new Promise((r) => setTimeout(r, 1000));
-    setLoading(false);
-
-    toast({
-      title: "Message sent! 🎉",
-      description: "Thanks for reaching out. I'll get back to you soon!",
-    });
-    setForm({ name: "", email: "", message: "" });
   };
 
   return (
-    <section id="contact" className="py-24 px-6">
+    <section id="contact" className="py-24 px-6 relative">
       <div className="container mx-auto max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -56,84 +51,138 @@ const ContactSection = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-sm font-medium text-primary uppercase tracking-wider">Contact</span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-2">Let's Connect 📬</h2>
+          <span className="inline-flex items-center gap-2 text-sm font-mono text-neon-green uppercase tracking-wider">
+            <span className="w-8 h-px bg-neon-green/50" />
+            Contact
+            <span className="w-8 h-px bg-neon-green/50" />
+          </span>
+          <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text">Let's Connect</h2>
+          <p className="text-muted-foreground mt-4 max-w-lg mx-auto">
+            Have a project in mind or just want to chat? I'm always open to new opportunities.
+          </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-12">
-          {/* Form */}
-          <motion.form
-            onSubmit={handleSubmit}
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Contact info */}
+          <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="space-y-5"
+            className="space-y-6"
           >
-            <div>
-              <Input
-                placeholder="Your Name"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="rounded-xl h-12"
-              />
-              {errors.name && <p className="text-destructive text-xs mt-1">{errors.name}</p>}
-            </div>
-            <div>
-              <Input
-                type="email"
-                placeholder="Your Email"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="rounded-xl h-12"
-              />
-              {errors.email && <p className="text-destructive text-xs mt-1">{errors.email}</p>}
-            </div>
-            <div>
-              <Textarea
-                placeholder="Your Message"
-                rows={5}
-                value={form.message}
-                onChange={(e) => setForm({ ...form, message: e.target.value })}
-                className="rounded-xl resize-none"
-              />
-              {errors.message && <p className="text-destructive text-xs mt-1">{errors.message}</p>}
-            </div>
-            <Button type="submit" size="lg" className="rounded-full w-full font-display gap-2" disabled={loading}>
-              {loading ? "Sending..." : <><Send size={16} /> Send Message</>}
-            </Button>
-          </motion.form>
-
-          {/* Info */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="flex flex-col justify-center"
-          >
-            <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-              I'm always open to new opportunities, collaborations, or just a friendly chat.
-              Feel free to reach out through the form or any of the channels below!
-            </p>
-
-            <div className="flex items-center gap-3 text-muted-foreground mb-6">
-              <MapPin size={18} className="text-primary" />
-              <span>{personalInfo.location}</span>
+            <div className="glass neon-border rounded-2xl p-6 flex items-center gap-4 group hover:neon-glow transition-all">
+              <div className="w-12 h-12 rounded-xl bg-neon-cyan/10 border border-neon-cyan/20 flex items-center justify-center text-neon-cyan group-hover:scale-110 transition-transform">
+                <Mail size={22} />
+              </div>
+              <div>
+                <p className="text-xs font-mono text-muted-foreground uppercase tracking-wider">Email</p>
+                <a href={`mailto:${personalInfo.email}`} className="text-foreground hover:text-neon-cyan transition-colors">
+                  {personalInfo.email}
+                </a>
+              </div>
             </div>
 
-            <div className="flex gap-3">
-              {socialLinks.map(({ icon: Icon, href, label, color }) => (
+            <div className="glass neon-border rounded-2xl p-6 flex items-center gap-4 group hover:neon-glow transition-all">
+              <div className="w-12 h-12 rounded-xl bg-neon-purple/10 border border-neon-purple/20 flex items-center justify-center text-neon-purple group-hover:scale-110 transition-transform">
+                <MapPin size={22} />
+              </div>
+              <div>
+                <p className="text-xs font-mono text-muted-foreground uppercase tracking-wider">Location</p>
+                <p className="text-foreground">{personalInfo.location}</p>
+              </div>
+            </div>
+
+            {/* Social links */}
+            <div className="flex gap-3 pt-4">
+              {socialLinks.map(({ icon: Icon, href, label }) => (
                 <a
                   key={label}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`p-3 rounded-full border border-border transition-all hover:scale-110 ${color || "hover:border-primary hover:text-primary"}`}
+                  className="w-12 h-12 rounded-xl glass neon-border flex items-center justify-center text-muted-foreground hover:text-neon-cyan hover:neon-glow transition-all"
                   aria-label={label}
                 >
                   <Icon size={20} />
                 </a>
               ))}
             </div>
+          </motion.div>
+
+          {/* Contact form */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            {isSent ? (
+              <div className="glass neon-border rounded-2xl p-12 text-center flex flex-col items-center justify-center h-full space-y-4">
+                <div className="w-20 h-20 rounded-full bg-neon-green/10 border border-neon-green/30 flex items-center justify-center text-neon-green mb-2 shadow-neon animate-pulse">
+                  <CheckCircle2 size={40} />
+                </div>
+                <h3 className="text-2xl font-bold gradient-text">Transmission Received!</h3>
+                <p className="text-muted-foreground font-mono text-sm uppercase tracking-tighter">Your inquiry has been stored in the mainframe. I will respond shortly.</p>
+                <Button
+                  variant="outline"
+                  className="mt-6 neon-border"
+                  onClick={() => setIsSent(false)}
+                >
+                  Send Another Message
+                </Button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="glass neon-border rounded-2xl p-6 space-y-4 relative overflow-hidden">
+                {isSending && (
+                  <div className="absolute inset-0 bg-background/50 backdrop-blur-sm z-20 flex items-center justify-center">
+                    <div className="w-12 h-12 border-4 border-neon-cyan/20 border-t-neon-cyan rounded-full animate-spin" />
+                  </div>
+                )}
+
+                <div>
+                  <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-1 block">Name</label>
+                  <Input
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="Your name"
+                    className="bg-muted/30 border-border/50 focus:border-neon-cyan/50"
+                    required
+                    disabled={isSending}
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-1 block">Email</label>
+                  <Input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="you@example.com"
+                    className="bg-muted/30 border-border/50 focus:border-neon-cyan/50"
+                    required
+                    disabled={isSending}
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-1 block">Message</label>
+                  <textarea
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    placeholder="Tell me about your project..."
+                    rows={4}
+                    className="w-full rounded-md border bg-muted/30 border-border/50 focus:border-neon-cyan/50 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-neon-cyan/50"
+                    required
+                    disabled={isSending}
+                  />
+                </div>
+
+                {error && (
+                  <p className="text-xs text-destructive font-mono animate-pulse">{error}</p>
+                )}
+
+                <Button type="submit" className="w-full gap-2 neon-glow hover:shadow-neon-lg transition-all" disabled={isSending}>
+                  <Send size={16} /> {isSending ? "Transmitting..." : "Send Message"}
+                </Button>
+              </form>
+            )}
           </motion.div>
         </div>
       </div>
@@ -142,3 +191,4 @@ const ContactSection = () => {
 };
 
 export default ContactSection;
+

@@ -92,6 +92,15 @@ CREATE TABLE testimonials (
   role TEXT NOT NULL DEFAULT '',
   sort_order INT DEFAULT 0
 );
+-- 10. Messages (Contact Form)
+CREATE TABLE messages (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  message TEXT NOT NULL,
+  is_read BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
 -- ============================================
 -- Row Level Security (RLS)
 -- Public can READ, only authenticated can WRITE
@@ -105,6 +114,7 @@ ALTER TABLE skills ENABLE ROW LEVEL SECURITY;
 ALTER TABLE services ENABLE ROW LEVEL SECURITY;
 ALTER TABLE blog_posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY;
+ALTER TABLE messages ENABLE ROW LEVEL SECURITY;
 -- Public read policies
 CREATE POLICY "Public read" ON personal_info FOR
 SELECT USING (true);
@@ -124,6 +134,9 @@ CREATE POLICY "Public read" ON blog_posts FOR
 SELECT USING (true);
 CREATE POLICY "Public read" ON testimonials FOR
 SELECT USING (true);
+-- Public can send messages
+CREATE POLICY "Public insert" ON messages FOR
+INSERT WITH CHECK (true);
 -- Admin write policies (INSERT, UPDATE, DELETE)
 CREATE POLICY "Admin write" ON personal_info FOR ALL USING (auth.role() = 'authenticated');
 CREATE POLICY "Admin write" ON social_links FOR ALL USING (auth.role() = 'authenticated');
@@ -134,3 +147,4 @@ CREATE POLICY "Admin write" ON skills FOR ALL USING (auth.role() = 'authenticate
 CREATE POLICY "Admin write" ON services FOR ALL USING (auth.role() = 'authenticated');
 CREATE POLICY "Admin write" ON blog_posts FOR ALL USING (auth.role() = 'authenticated');
 CREATE POLICY "Admin write" ON testimonials FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Admin all" ON messages FOR ALL USING (auth.role() = 'authenticated');

@@ -9,10 +9,12 @@ import TestimonialsSection from "@/components/TestimonialsSection";
 import BlogSection from "@/components/BlogSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
+import ParticleGrid from "@/components/ParticleGrid";
 
 const Index = () => {
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background relative">
+      <ParticleGrid />
       <Navbar />
       <HeroSection />
       <AboutSection />
@@ -29,3 +31,4 @@ const Index = () => {
 };
 
 export default Index;
+

@@ -18,6 +18,7 @@ import AdminSkills from "./pages/admin/AdminSkills";
 import AdminServices from "./pages/admin/AdminServices";
 import AdminBlog from "./pages/admin/AdminBlog";
 import AdminTestimonials from "./pages/admin/AdminTestimonials";
+import AdminMessages from "./pages/admin/AdminMessages";
 
 const queryClient = new QueryClient();
 
@@ -53,7 +54,9 @@ const App = () => (
               <Route path="services" element={<AdminServices />} />
               <Route path="blog" element={<AdminBlog />} />
               <Route path="testimonials" element={<AdminTestimonials />} />
+              <Route path="messages" element={<AdminMessages />} />
             </Route>
+
 
             <Route path="*" element={<NotFound />} />
           </Routes>

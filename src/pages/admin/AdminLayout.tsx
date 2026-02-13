@@ -5,7 +5,7 @@ import { syncReposToSupabase } from "@/lib/githubSync";
 import {
   User, FileText, Briefcase, FolderGit2, Wrench, Zap,
   PenTool, MessageSquare, LogOut, Github, Menu, X, Home,
-  LayoutDashboard,
+  LayoutDashboard, Inbox
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -19,7 +19,9 @@ const navItems = [
   { to: "/admin/services", icon: Zap, label: "Services" },
   { to: "/admin/blog", icon: PenTool, label: "Blog" },
   { to: "/admin/testimonials", icon: MessageSquare, label: "Testimonials" },
+  { to: "/admin/messages", icon: Inbox, label: "Messages" },
 ];
+
 
 const AdminLayout = () => {
   const { user, signOut } = useAuth();

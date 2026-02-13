@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Moon, Sun, Menu, X } from "lucide-react";
+import { Menu, X, Terminal } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { personalInfo } from "@/data";
@@ -9,13 +9,11 @@ const navItems = [
   { label: "Skills", href: "#skills" },
   { label: "Projects", href: "#projects" },
   { label: "Experience", href: "#experience" },
-  { label: "Testimonials", href: "#testimonials" },
   { label: "Blog", href: "#blog" },
   { label: "Contact", href: "#contact" },
 ];
 
 const Navbar = () => {
-  const [dark, setDark] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -25,51 +23,46 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", dark);
-  }, [dark]);
-
   return (
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "glass shadow-lg" : "bg-transparent"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "glass-strong shadow-lg neon-glow" : "bg-transparent"
         }`}
     >
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="#" className="font-display text-2xl font-bold gradient-text">
-          {personalInfo.name}
+        <a href="#" className="flex items-center gap-2 group">
+          <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-center text-primary group-hover:neon-glow transition-all">
+            <Terminal size={16} />
+          </div>
+          <span className="font-display text-xl font-bold gradient-text">
+            {personalInfo.name.split(" ")[0]}
+          </span>
         </a>
 
         {/* Desktop */}
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-1">
           {navItems.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all hover:after:w-full"
+              className="px-3 py-2 text-sm font-mono text-muted-foreground hover:text-neon-cyan transition-all relative group"
             >
-              {item.label}
+              <span className="relative z-10">{item.label}</span>
+              <span className="absolute inset-0 rounded-lg bg-neon-cyan/0 group-hover:bg-neon-cyan/5 transition-all" />
+              <span className="absolute bottom-1 left-3 right-3 h-px bg-neon-cyan/0 group-hover:bg-neon-cyan/50 transition-all" />
             </a>
           ))}
-          <button
-            onClick={() => setDark(!dark)}
-            className="p-2 rounded-full hover:bg-muted transition-colors"
-            aria-label="Toggle theme"
-          >
-            {dark ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
         </div>
 
         {/* Mobile toggle */}
-        <div className="flex md:hidden items-center gap-2">
-          <button onClick={() => setDark(!dark)} className="p-2 rounded-full hover:bg-muted">
-            {dark ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
-          <button onClick={() => setMobileOpen(!mobileOpen)} className="p-2">
-            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-          </button>
-        </div>
+        <button
+          onClick={() => setMobileOpen(!mobileOpen)}
+          className="md:hidden p-2 rounded-lg glass neon-border"
+          aria-label="Toggle menu"
+        >
+          {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
       </div>
 
       {/* Mobile menu */}
@@ -79,16 +72,17 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden glass border-t border-border"
+            className="md:hidden glass-strong border-t border-neon-cyan/10"
           >
-            <div className="container mx-auto px-6 py-4 flex flex-col gap-3">
-              {navItems.map((item) => (
+            <div className="container mx-auto px-6 py-4 flex flex-col gap-1">
+              {navItems.map((item, i) => (
                 <a
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground py-2"
+                  className="text-sm font-mono text-muted-foreground hover:text-neon-cyan py-3 px-3 rounded-lg hover:bg-neon-cyan/5 transition-all flex items-center gap-2"
                 >
+                  <span className="text-neon-cyan/30 text-xs">0{i + 1}.</span>
                   {item.label}
                 </a>
               ))}

@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
-import { FolderGit2, PenTool, MessageSquare, Briefcase, Wrench, Zap } from "lucide-react";
+import { seedDatabase } from "@/lib/seedDatabase";
+import { Button } from "@/components/ui/button";
+import { FolderGit2, PenTool, MessageSquare, Briefcase, Wrench, Zap, Database, LucideIcon } from "lucide-react";
 
 interface CountCard {
   label: string;
   table: string;
-  icon: unknown;
+  icon: LucideIcon;
   count: number;
 }
 
@@ -18,27 +20,68 @@ const AdminDashboard = () => {
     { label: "Skills", table: "skills", icon: Wrench, count: 0 },
     { label: "Services", table: "services", icon: Zap, count: 0 },
   ]);
+  const [seeding, setSeeding] = useState(false);
+  const [seedResults, setSeedResults] = useState<string[]>([]);
+
+  const fetchCounts = async () => {
+    const updated = await Promise.all(
+      cards.map(async (card) => {
+        const { count } = await supabase
+          .from(card.table)
+          .select("*", { count: "exact", head: true });
+        return { ...card, count: count || 0 };
+      })
+    );
+    setCards(updated);
+  };
 
   useEffect(() => {
-    const fetchCounts = async () => {
-      const updated = await Promise.all(
-        cards.map(async (card) => {
-          const { count } = await supabase
-            .from(card.table)
-            .select("*", { count: "exact", head: true });
-          return { ...card, count: count || 0 };
-        })
-      );
-      setCards(updated);
-    };
     fetchCounts();
   }, []);
+
+  const handleSeed = async () => {
+    setSeeding(true);
+    setSeedResults([]);
+    try {
+      const results = await seedDatabase();
+      setSeedResults(results);
+      fetchCounts(); // Refresh counts after seeding
+    } catch (err: any) {
+      setSeedResults([`❌ Error: ${err.message}`]);
+    }
+    setSeeding(false);
+  };
 
   return (
     <div>
       <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
       <p className="text-muted-foreground mb-8">Welcome to your portfolio admin panel.</p>
 
+      {/* Seed Data Section */}
+      <div className="mb-8 p-5 rounded-2xl border border-dashed border-primary/30 bg-primary/5">
+        <div className="flex items-center justify-between mb-3">
+          <div>
+            <h2 className="font-bold text-lg flex items-center gap-2">
+              <Database size={20} className="text-primary" /> Seed Database
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              Push your current portfolio data into Supabase. Safe to run multiple times (skips existing data).
+            </p>
+          </div>
+          <Button onClick={handleSeed} disabled={seeding} className="gap-2">
+            <Database size={16} /> {seeding ? "Seeding..." : "Seed All Data"}
+          </Button>
+        </div>
+        {seedResults.length > 0 && (
+          <div className="mt-3 p-3 rounded-lg bg-background text-sm space-y-1 font-mono">
+            {seedResults.map((r, i) => (
+              <p key={i}>{r}</p>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Content Counts */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {cards.map(({ label, icon: Icon, count }) => (
           <div

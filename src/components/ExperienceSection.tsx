@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import { Briefcase, GraduationCap } from "lucide-react";
 
 type TimelineItem = {
   type: "work" | "education";
@@ -11,9 +10,16 @@ type TimelineItem = {
 
 import { experience } from "@/data";
 
+const typeColors: Record<string, string> = {
+  work: "border-neon-cyan bg-neon-cyan",
+  education: "border-neon-purple bg-neon-purple",
+  research: "border-neon-green bg-neon-green",
+  academic: "border-neon-orange bg-neon-orange",
+};
+
 const ExperienceSection = () => {
   return (
-    <section id="experience" className="py-24 px-6 bg-muted/30">
+    <section id="experience" className="py-24 px-6 relative">
       <div className="container mx-auto max-w-3xl">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -21,17 +27,22 @@ const ExperienceSection = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-sm font-medium text-primary uppercase tracking-wider">Journey</span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-2">Experience & Education 🎓</h2>
+          <span className="inline-flex items-center gap-2 text-sm font-mono text-neon-orange uppercase tracking-wider">
+            <span className="w-8 h-px bg-neon-orange/50" />
+            Journey
+            <span className="w-8 h-px bg-neon-orange/50" />
+          </span>
+          <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text">Experience & Education</h2>
         </motion.div>
 
         <div className="relative">
-          {/* Center line */}
-          <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-border -translate-x-1/2 hidden md:block" />
+          {/* Neon center line */}
+          <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-neon-cyan/50 via-neon-purple/30 to-neon-green/50 -translate-x-1/2" />
 
           <div className="space-y-12">
             {experience.map((item, i) => {
               const isLeft = i % 2 === 0;
+              const dotColor = typeColors[item.type] || "border-neon-cyan bg-neon-cyan";
               return (
                 <motion.div
                   key={item.title + item.org}
@@ -39,31 +50,38 @@ const ExperienceSection = () => {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5 }}
-                  className={`relative flex flex-col md:flex-row ${isLeft ? "md:flex-row" : "md:flex-row-reverse"
-                    } items-center gap-6`}
+                  className={`relative flex flex-col md:flex-row ${isLeft ? "md:flex-row" : "md:flex-row-reverse"} items-center gap-6`}
                 >
                   <div className={`hidden md:flex w-1/2 justify-${isLeft ? 'end' : 'start'} items-center`}>
-                    <div className="text-sm font-medium text-muted-foreground">{item.date}</div>
-                    <div className={`w-8 h-[1px] bg-border mx-4 ${isLeft ? '' : 'order-first'}`}></div>
+                    <div className="text-sm font-mono text-muted-foreground">{item.date}</div>
+                    <div className={`w-8 h-[1px] bg-border/50 mx-4 ${isLeft ? '' : 'order-first'}`} />
                   </div>
 
-                  <div className="absolute left-4 md:left-1/2 w-4 h-4 -ml-2 rounded-full border-2 border-primary bg-background z-10"></div>
+                  {/* Neon dot */}
+                  <div className={`absolute left-6 md:left-1/2 w-3 h-3 -ml-1.5 rounded-full border-2 ${dotColor} z-10`}
+                    style={{ boxShadow: `0 0 8px currentColor` }}
+                  />
 
-                  <div className={`w-full md:w-1/2 pl-12 md:pl-0 ${isLeft ? 'md:pr-12 md:text-right' : 'md:pl-12'}`}>
-                    <div className="md:hidden text-sm font-semibold text-primary mb-1">{item.date}</div>
-                    <h3 className="text-xl font-bold">{item.title}</h3>
-                    <div className="text-primary font-medium mb-1">{item.org}</div>
-                    {item.location && <div className="text-xs text-muted-foreground mb-3">{item.location}</div>}
-                    <p className="text-muted-foreground mb-3">{item.description}</p>
-                    {item.skills && (
-                      <div className={`flex flex-wrap gap-2 ${isLeft ? 'md:justify-end' : 'md:justify-start'}`}>
-                        {item.skills.map(skill => (
-                          <span key={skill} className="px-2 py-0.5 rounded text-[10px] uppercase tracking-wider bg-muted text-muted-foreground">
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    )}
+                  <div className={`w-full md:w-1/2 pl-14 md:pl-0 ${isLeft ? 'md:pr-12 md:text-right' : 'md:pl-12'}`}>
+                    <div className="glass neon-border rounded-2xl p-5 holo-shine">
+                      <div className="md:hidden text-xs font-mono text-neon-cyan mb-2">{item.date}</div>
+                      <span className="inline-block px-2 py-0.5 rounded text-[10px] uppercase font-mono tracking-wider bg-neon-cyan/10 text-neon-cyan mb-2">
+                        {item.type}
+                      </span>
+                      <h3 className="text-lg font-bold text-foreground">{item.title}</h3>
+                      <div className="text-neon-purple font-medium text-sm mb-1">{item.org}</div>
+                      {item.location && <div className="text-xs text-muted-foreground mb-3">{item.location}</div>}
+                      <p className="text-sm text-muted-foreground mb-3">{item.description}</p>
+                      {item.skills && (
+                        <div className={`flex flex-wrap gap-1.5 ${isLeft ? 'md:justify-end' : 'md:justify-start'}`}>
+                          {item.skills.map(skill => (
+                            <span key={skill} className="px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-mono bg-muted/50 text-muted-foreground neon-border">
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </motion.div>
               );
