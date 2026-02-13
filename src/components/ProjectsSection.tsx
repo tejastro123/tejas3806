@@ -12,56 +12,7 @@ type Project = {
   github?: string;
 };
 
-const projects: Project[] = [
-  {
-    title: "E-Commerce Platform",
-    description: "A full-stack e-commerce application with real-time inventory, Stripe payments, and admin dashboard.",
-    tags: ["React", "Node.js", "PostgreSQL", "Stripe"],
-    category: "Full Stack",
-    demo: "#",
-    github: "#",
-  },
-  {
-    title: "AI Chat Assistant",
-    description: "An intelligent chatbot powered by OpenAI with context-aware responses and conversation history.",
-    tags: ["Python", "OpenAI", "FastAPI", "React"],
-    category: "AI/ML",
-    demo: "#",
-    github: "#",
-  },
-  {
-    title: "Task Management App",
-    description: "A collaborative project management tool with real-time updates, drag-and-drop, and team features.",
-    tags: ["Next.js", "TypeScript", "Supabase"],
-    category: "Full Stack",
-    demo: "#",
-    github: "#",
-  },
-  {
-    title: "Portfolio Generator",
-    description: "A CLI tool that generates beautiful portfolio websites from a simple configuration file.",
-    tags: ["TypeScript", "Node.js", "CLI"],
-    category: "Tools",
-    demo: "#",
-    github: "#",
-  },
-  {
-    title: "Weather Dashboard",
-    description: "A beautiful weather dashboard with animated visualizations and 7-day forecasts.",
-    tags: ["React", "D3.js", "API"],
-    category: "Frontend",
-    demo: "#",
-    github: "#",
-  },
-  {
-    title: "Code Snippet Manager",
-    description: "A VS Code extension for organizing, searching, and sharing code snippets across teams.",
-    tags: ["TypeScript", "VS Code API"],
-    category: "Tools",
-    demo: "#",
-    github: "#",
-  },
-];
+import { projects } from "@/data";
 
 const filters = ["All", "Full Stack", "Frontend", "AI/ML", "Tools"];
 
@@ -88,11 +39,10 @@ const ProjectsSection = () => {
             <button
               key={f}
               onClick={() => setActive(f)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                active === f
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${active === f
                   ? "bg-primary text-primary-foreground shadow-lg"
                   : "bg-muted text-muted-foreground hover:bg-muted/80"
-              }`}
+                }`}
             >
               {f}
             </button>

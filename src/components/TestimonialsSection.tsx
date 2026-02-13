@@ -2,23 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 
-const testimonials = [
-  {
-    quote: "One of the most talented engineers I've worked with. Consistently delivers high-quality code and is always willing to help teammates.",
-    name: "Jane Doe",
-    role: "Engineering Manager at Tech Co",
-  },
-  {
-    quote: "A creative problem solver who brings energy and fresh ideas to every project. It was a pleasure mentoring them during their internship.",
-    name: "John Smith",
-    role: "Senior Developer at Startup Inc.",
-  },
-  {
-    quote: "Exceptional student with a strong work ethic. Their final project was one of the best I've seen in my 15 years of teaching.",
-    name: "Prof. Sarah Johnson",
-    role: "CS Professor at University",
-  },
-];
+import { testimonials } from "@/data";
 
 const TestimonialsSection = () => {
   const [current, setCurrent] = useState(0);
@@ -74,9 +58,9 @@ const TestimonialsSection = () => {
                 <button
                   key={i}
                   onClick={() => setCurrent(i)}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    i === current ? "bg-primary w-6" : "bg-muted-foreground/30"
-                  }`}
+                  className={`w-2 h-2 rounded-full transition-all ${i === current ? "bg-primary w-6" : "bg-muted-foreground/30"
+                    }`}
+                  aria-label={`Go to testimonial ${i + 1}`}
                 />
               ))}
             </div>

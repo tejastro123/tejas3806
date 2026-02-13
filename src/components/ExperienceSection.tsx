@@ -9,36 +9,7 @@ type TimelineItem = {
   description: string;
 };
 
-const timeline: TimelineItem[] = [
-  {
-    type: "work",
-    title: "Software Engineer",
-    org: "Tech Company",
-    date: "2023 – Present",
-    description: "Building scalable web applications and leading frontend architecture decisions.",
-  },
-  {
-    type: "work",
-    title: "Frontend Developer Intern",
-    org: "Startup Inc.",
-    date: "2022 – 2023",
-    description: "Developed user-facing features with React and collaborated on design system implementation.",
-  },
-  {
-    type: "education",
-    title: "B.S. Computer Science",
-    org: "University Name",
-    date: "2019 – 2023",
-    description: "Graduated with honors. Focused on software engineering, algorithms, and web technologies.",
-  },
-  {
-    type: "education",
-    title: "High School Diploma",
-    org: "School Name",
-    date: "2015 – 2019",
-    description: "Excelled in mathematics and computer science. Started programming journey here.",
-  },
-];
+import { experience } from "@/data";
 
 const ExperienceSection = () => {
   return (
@@ -59,7 +30,7 @@ const ExperienceSection = () => {
           <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-border -translate-x-1/2 hidden md:block" />
 
           <div className="space-y-12">
-            {timeline.map((item, i) => {
+            {experience.map((item, i) => {
               const isLeft = i % 2 === 0;
               return (
                 <motion.div
@@ -68,9 +39,8 @@ const ExperienceSection = () => {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5 }}
-                  className={`relative flex flex-col md:flex-row ${
-                    isLeft ? "md:flex-row" : "md:flex-row-reverse"
-                  } items-center gap-6`}
+                  className={`relative flex flex-col md:flex-row ${isLeft ? "md:flex-row" : "md:flex-row-reverse"
+                    } items-center gap-6`}
                 >
                   {/* Card */}
                   <div className={`flex-1 ${isLeft ? "md:text-right" : "md:text-left"}`}>

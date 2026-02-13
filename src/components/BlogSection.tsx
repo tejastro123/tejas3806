@@ -1,26 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight, Calendar } from "lucide-react";
 
-const posts = [
-  {
-    title: "Building Scalable React Applications",
-    date: "Jan 2026",
-    excerpt: "Lessons learned from architecting large-scale React apps with clean patterns and best practices.",
-    link: "#",
-  },
-  {
-    title: "My Journey Into Open Source",
-    date: "Dec 2025",
-    excerpt: "How contributing to open source projects transformed my skills and career opportunities.",
-    link: "#",
-  },
-  {
-    title: "TypeScript Tips You Wish You Knew Sooner",
-    date: "Nov 2025",
-    excerpt: "A collection of TypeScript patterns and techniques that will level up your code quality.",
-    link: "#",
-  },
-];
+import { blogPosts } from "@/data";
 
 const BlogSection = () => {
   return (
@@ -37,7 +18,7 @@ const BlogSection = () => {
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-6">
-          {posts.map((post, i) => (
+          {blogPosts.map((post, i) => (
             <motion.a
               key={post.title}
               href={post.link}

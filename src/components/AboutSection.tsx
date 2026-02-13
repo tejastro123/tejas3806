@@ -1,12 +1,7 @@
 import { motion } from "framer-motion";
 import { Code2, Lightbulb, Rocket, Coffee } from "lucide-react";
 
-const funFacts = [
-  "🎮 Avid gamer in my downtime",
-  "☕ Fueled by coffee & curiosity",
-  "🌍 Love open source contributions",
-  "📚 Always learning something new",
-];
+import { personalInfo, about } from "@/data";
 
 const highlights = [
   { icon: Code2, title: "Clean Code", desc: "I write readable, maintainable, well-tested code." },
@@ -45,7 +40,7 @@ const AboutSection = () => {
               <span className="text-6xl">🧑‍💻</span>
             </div>
             <div className="absolute -bottom-4 -right-4 px-4 py-2 rounded-xl glass shadow-lg text-sm font-medium">
-              📍 Your City, Country
+              📍 {personalInfo.location}
             </div>
           </motion.div>
 
@@ -57,9 +52,7 @@ const AboutSection = () => {
             transition={{ duration: 0.5 }}
           >
             <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-              I'm a passionate software engineer who loves building products that make a difference.
-              With a strong foundation in full-stack development, I enjoy turning complex problems into
-              simple, beautiful, and intuitive solutions.
+              {personalInfo.bio.long}
             </p>
             <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
               When I'm not coding, you'll find me exploring new technologies, contributing to open
@@ -69,7 +62,7 @@ const AboutSection = () => {
             <div className="space-y-2">
               <p className="text-sm font-display font-semibold text-foreground mb-3">Fun facts about me:</p>
               <div className="flex flex-wrap gap-2">
-                {funFacts.map((fact) => (
+                {about.funFacts.map((fact) => (
                   <span
                     key={fact}
                     className="px-3 py-1.5 rounded-full bg-muted text-sm text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors cursor-default"

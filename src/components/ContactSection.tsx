@@ -13,11 +13,7 @@ const contactSchema = z.object({
   message: z.string().trim().min(1, "Message is required").max(2000),
 });
 
-const socials = [
-  { icon: Github, href: "https://github.com", label: "GitHub" },
-  { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-  { icon: Mail, href: "mailto:hello@example.com", label: "Email" },
-];
+import { personalInfo, socialLinks } from "@/data";
 
 const ContactSection = () => {
   const { toast } = useToast();
@@ -121,11 +117,11 @@ const ContactSection = () => {
 
             <div className="flex items-center gap-3 text-muted-foreground mb-6">
               <MapPin size={18} className="text-primary" />
-              <span>Your City, Country</span>
+              <span>{personalInfo.location}</span>
             </div>
 
             <div className="flex gap-3">
-              {socials.map(({ icon: Icon, href, label }) => (
+              {socialLinks.map(({ icon: Icon, href, label }) => (
                 <a
                   key={label}
                   href={href}

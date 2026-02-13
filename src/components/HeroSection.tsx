@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { ArrowDown, Github, Linkedin, Mail } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { personalInfo, socialLinks } from "@/data";
 
 const HeroSection = () => {
   return (
@@ -32,7 +33,7 @@ const HeroSection = () => {
           transition={{ duration: 0.6, delay: 0.15 }}
           className="text-5xl md:text-7xl font-bold mb-4 tracking-tight"
         >
-          <span className="gradient-text">Your Name</span>
+          <span className="gradient-text">{personalInfo.name}</span>
         </motion.h1>
 
         <motion.p
@@ -41,7 +42,7 @@ const HeroSection = () => {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="text-xl md:text-2xl text-muted-foreground mb-3 font-display"
         >
-          Software Engineer
+          {personalInfo.role}
         </motion.p>
 
         <motion.p
@@ -50,7 +51,7 @@ const HeroSection = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-lg text-muted-foreground/80 mb-8 max-w-lg mx-auto"
         >
-          I craft delightful digital experiences with clean code and creative problem-solving ✨
+          {personalInfo.bio.short}
         </motion.p>
 
         <motion.div
@@ -73,11 +74,7 @@ const HeroSection = () => {
           transition={{ delay: 0.7 }}
           className="flex justify-center gap-4"
         >
-          {[
-            { icon: Github, href: "https://github.com", label: "GitHub" },
-            { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-            { icon: Mail, href: "mailto:hello@example.com", label: "Email" },
-          ].map(({ icon: Icon, href, label }) => (
+          {socialLinks.map(({ icon: Icon, href, label }) => (
             <a
               key={label}
               href={href}

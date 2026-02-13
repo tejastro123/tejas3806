@@ -6,41 +6,7 @@ type SkillCategory = {
   skills: { name: string; level: number }[];
 };
 
-const categories: SkillCategory[] = [
-  {
-    title: "Languages",
-    color: "bg-primary/10 text-primary border-primary/20",
-    skills: [
-      { name: "TypeScript", level: 90 },
-      { name: "JavaScript", level: 95 },
-      { name: "Python", level: 80 },
-      { name: "Java", level: 70 },
-      { name: "SQL", level: 85 },
-    ],
-  },
-  {
-    title: "Frontend",
-    color: "bg-secondary/10 text-secondary border-secondary/20",
-    skills: [
-      { name: "React", level: 92 },
-      { name: "Next.js", level: 85 },
-      { name: "Tailwind CSS", level: 95 },
-      { name: "HTML/CSS", level: 95 },
-      { name: "Framer Motion", level: 75 },
-    ],
-  },
-  {
-    title: "Backend & Tools",
-    color: "bg-accent/10 text-accent border-accent/20",
-    skills: [
-      { name: "Node.js", level: 88 },
-      { name: "PostgreSQL", level: 80 },
-      { name: "Git", level: 90 },
-      { name: "Docker", level: 70 },
-      { name: "REST APIs", level: 90 },
-    ],
-  },
-];
+import { skills } from "@/data";
 
 const SkillsSection = () => {
   return (
@@ -57,7 +23,7 @@ const SkillsSection = () => {
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          {categories.map((cat, ci) => (
+          {skills.map((cat, ci) => (
             <motion.div
               key={cat.title}
               initial={{ opacity: 0, y: 30 }}
@@ -80,9 +46,8 @@ const SkillsSection = () => {
                         whileInView={{ width: `${skill.level}%` }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8, delay: 0.2 }}
-                        className={`h-full rounded-full ${
-                          ci === 0 ? "bg-primary" : ci === 1 ? "bg-secondary" : "bg-accent"
-                        }`}
+                        className={`h-full rounded-full ${ci === 0 ? "bg-primary" : ci === 1 ? "bg-secondary" : "bg-accent"
+                          }`}
                       />
                     </div>
                   </div>

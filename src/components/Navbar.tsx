@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Moon, Sun, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { personalInfo } from "@/data";
+
 const navItems = [
   { label: "About", href: "#about" },
   { label: "Skills", href: "#skills" },
@@ -31,13 +33,12 @@ const Navbar = () => {
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "glass shadow-lg" : "bg-transparent"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "glass shadow-lg" : "bg-transparent"
+        }`}
     >
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
         <a href="#" className="font-display text-2xl font-bold gradient-text">
-          Portfolio
+          {personalInfo.name}
         </a>
 
         {/* Desktop */}
