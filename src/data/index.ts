@@ -440,12 +440,12 @@ export const services = [
     icon: Globe,
   },
   {
-    title: "Robotics Prototyping",
-    description: "Designing control systems and electronics for autonomous and manual bots.",
+    title: "AI ML DS",
+    description: "Building AI, ML, and Data Science models from scratch. Implementing custom algorithms and frameworks.",
     icon: Cpu,
   },
   {
-    title: "Quantum Simulation",
+    title: "Quantum Computing",
     description: "Developing educational tools and simulations for Quantum Computing concepts.",
     icon: Microscope,
   },
@@ -453,14 +453,19 @@ export const services = [
 
 export const testimonials = [
   {
-    quote: "Tejas possesses a rare ability to translate complex hardware constraints into efficient software solutions. A true asset to the Mars Rover electronics division.",
-    name: "Club President",
-    role: "Vanguard Rover Team",
+    quote: "Ever tried, ever failed, no matter. Try again, fail again, fail better.",
+    name: "Samuel Beckett",
+    role: "Writer",
   },
   {
-    quote: "An exceptionally bright mind who navigates the complexities of Quantum Physics and Computer Science with equal ease.",
-    name: "Dr. [Professor Name]",
-    role: "Professor, BITS Pilani",
+    quote: "Only those who will risk going too far can possibly find out how far one can go.",
+    name: "Sir Arthur C. Clarke",
+    role: "Writer",
+  },
+  {
+    quote: "The only way to do great work is to love what you do.",
+    name: "Steve Jobs",
+    role: "Entrepreneur",
   },
 ];
 
