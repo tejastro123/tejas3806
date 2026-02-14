@@ -3,6 +3,7 @@ import { Code2, Lightbulb, Rocket, Coffee } from "lucide-react";
 import { personalInfo, about } from "@/data";
 import { useTextScramble } from "@/hooks/useTextScramble";
 import { Magnetic } from "@/components/Magnetic";
+import { useTranslation } from "react-i18next";
 
 const highlights = [
   { icon: Code2, title: "Clean Code", desc: "I write readable, maintainable, well-tested code." },
@@ -12,7 +13,15 @@ const highlights = [
 ];
 
 const AboutSection = () => {
-  const { displayText, scramble } = useTextScramble("Nice to meet you!");
+  const { t } = useTranslation();
+  const { displayText, scramble } = useTextScramble(t("about.heading"));
+
+  const highlights = [
+    { icon: Code2, title: t("about.highlights.clean_code.title"), desc: t("about.highlights.clean_code.desc") },
+    { icon: Lightbulb, title: t("about.highlights.creative.title"), desc: t("about.highlights.creative.desc") },
+    { icon: Rocket, title: t("about.highlights.ship_fast.title"), desc: t("about.highlights.ship_fast.desc") },
+    { icon: Coffee, title: t("about.highlights.team.title"), desc: t("about.highlights.team.desc") },
+  ];
 
   return (
     <section id="about" className="py-24 px-6 relative">
@@ -27,7 +36,7 @@ const AboutSection = () => {
         >
           <span className="inline-flex items-center gap-2 text-sm font-mono text-neon-green uppercase tracking-wider">
             <span className="w-8 h-px bg-neon-green/50" />
-            About Me
+            {t("about.label")}
             <span className="w-8 h-px bg-neon-green/50" />
           </span>
           <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text font-mono min-h-[1.2em]" onMouseEnter={scramble}>
@@ -67,7 +76,7 @@ const AboutSection = () => {
             transition={{ duration: 0.5 }}
           >
             <p className="text-lg text-foreground/80 mb-6 leading-relaxed">
-              {personalInfo.bio.long}
+              {t("about.long_bio")}
             </p>
 
             <div className="space-y-2">

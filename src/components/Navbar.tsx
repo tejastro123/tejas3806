@@ -1,21 +1,23 @@
 import { useState, useEffect } from "react";
 import { Menu, X, Terminal } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-
+import { useTranslation } from "react-i18next";
 import { personalInfo } from "@/data";
-
-const navItems = [
-  { label: "About", href: "#about" },
-  { label: "Skills", href: "#skills" },
-  { label: "Projects", href: "#projects" },
-  { label: "Experience", href: "#experience" },
-  { label: "Blog", href: "#blog" },
-  { label: "Contact", href: "#contact" },
-];
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 const Navbar = () => {
+  const { t } = useTranslation();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navItems = [
+    { label: t("nav.about"), href: "#about" },
+    { label: t("nav.skills"), href: "#skills" },
+    { label: t("nav.projects"), href: "#projects" },
+    { label: t("nav.experience"), href: "#experience" },
+    { label: t("nav.blog"), href: "#blog" },
+    { label: t("nav.contact"), href: "#contact" },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -41,28 +43,35 @@ const Navbar = () => {
         </a>
 
         {/* Desktop */}
-        <div className="hidden md:flex items-center gap-1">
-          {navItems.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="px-3 py-2 text-sm font-mono text-muted-foreground hover:text-neon-cyan transition-all relative group"
-            >
-              <span className="relative z-10">{item.label}</span>
-              <span className="absolute inset-0 rounded-lg bg-neon-cyan/0 group-hover:bg-neon-cyan/5 transition-all" />
-              <span className="absolute bottom-1 left-3 right-3 h-px bg-neon-cyan/0 group-hover:bg-neon-cyan/50 transition-all" />
-            </a>
-          ))}
+        <div className="hidden md:flex items-center gap-4">
+          <div className="flex items-center gap-1">
+            {navItems.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="px-3 py-2 text-sm font-mono text-muted-foreground hover:text-neon-cyan transition-all relative group"
+              >
+                <span className="relative z-10">{item.label}</span>
+                <span className="absolute inset-0 rounded-lg bg-neon-cyan/0 group-hover:bg-neon-cyan/5 transition-all" />
+                <span className="absolute bottom-1 left-3 right-3 h-px bg-neon-cyan/0 group-hover:bg-neon-cyan/50 transition-all" />
+              </a>
+            ))}
+          </div>
+          <div className="h-6 w-px bg-border/50 mx-2" />
+          <LanguageSwitcher />
         </div>
 
         {/* Mobile toggle */}
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden p-2 rounded-lg glass neon-border"
-          aria-label="Toggle menu"
-        >
-          {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
+        <div className="flex items-center gap-2 md:hidden">
+          <LanguageSwitcher />
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="p-2 rounded-lg glass neon-border"
+            aria-label="Toggle menu"
+          >
+            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu */}

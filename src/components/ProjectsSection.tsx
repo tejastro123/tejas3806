@@ -17,12 +17,22 @@ type Project = {
 };
 
 import { projects } from "@/data";
-
-const filters = ["All", "Featured", "Full Stack", "AI/ML", "Algorithms", "Quantum Computing", "Web Dev"];
+import { useTranslation } from "react-i18next";
 
 const ProjectsSection = () => {
+  const { t } = useTranslation();
   const [active, setActive] = useState("All");
-  const { displayText, scramble } = useTextScramble("Things I've Built");
+  const { displayText, scramble } = useTextScramble(t("projects.heading"));
+
+  const filterConfigs = [
+    { id: "All", label: t("projects.filters.all") },
+    { id: "Featured", label: t("projects.filters.featured") },
+    { id: "Full Stack", label: t("projects.filters.full_stack") },
+    { id: "AI/ML", label: t("projects.filters.ai_ml") },
+    { id: "Algorithms", label: t("projects.filters.algorithms") },
+    { id: "Quantum Computing", label: t("projects.filters.quantum") },
+    { id: "Web Dev", label: t("projects.filters.web_dev") },
+  ];
 
   const filtered = active === "All"
     ? projects
@@ -42,7 +52,7 @@ const ProjectsSection = () => {
         >
           <span className="inline-flex items-center gap-2 text-sm font-mono text-neon-cyan uppercase tracking-wider">
             <span className="w-8 h-px bg-neon-cyan/50" />
-            Projects
+            {t("nav.projects")}
             <span className="w-8 h-px bg-neon-cyan/50" />
           </span>
           <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text font-mono min-h-[1.2em]" onMouseEnter={scramble}>
@@ -52,16 +62,16 @@ const ProjectsSection = () => {
 
         {/* Filter tabs */}
         <div className="flex flex-wrap justify-center gap-2 mb-12">
-          {filters.map((f) => (
+          {filterConfigs.map((f) => (
             <button
-              key={f}
-              onClick={() => setActive(f)}
-              className={`px-4 py-2 rounded-full text-sm font-mono transition-all ${active === f
+              key={f.id}
+              onClick={() => setActive(f.id)}
+              className={`px-4 py-2 rounded-full text-sm font-mono transition-all ${active === f.id
                 ? "bg-primary text-primary-foreground neon-glow"
                 : "glass neon-border text-muted-foreground hover:text-foreground"
                 }`}
             >
-              {f}
+              {f.label}
             </button>
           ))}
         </div>
@@ -116,7 +126,7 @@ const ProjectsSection = () => {
 
                     {project.featured && (
                       <div className="absolute top-3 right-3 px-2.5 py-1 bg-neon-cyan/90 text-primary-foreground text-xs font-bold font-mono rounded-full shadow-neon z-10">
-                        ★ Featured
+                        ★ {t("projects.filters.featured")}
                       </div>
                     )}
                   </div>
@@ -146,7 +156,7 @@ const ProjectsSection = () => {
                         <Magnetic>
                           <Button size="sm" variant="outline" className="rounded-full text-xs gap-1.5 flex-1 neon-border hover:text-neon-cyan" asChild>
                             <a href={project.demo} target="_blank" rel="noopener noreferrer">
-                              <ExternalLink size={14} /> Demo
+                              <ExternalLink size={14} /> {t("common.demo")}
                             </a>
                           </Button>
                         </Magnetic>
@@ -155,7 +165,7 @@ const ProjectsSection = () => {
                         <Magnetic>
                           <Button size="sm" variant="ghost" className="rounded-full text-xs gap-1.5 flex-1 hover:text-neon-purple" asChild>
                             <a href={project.github} target="_blank" rel="noopener noreferrer">
-                              <Github size={14} /> Code
+                              <Github size={14} /> {t("common.code")}
                             </a>
                           </Button>
                         </Magnetic>
@@ -173,7 +183,7 @@ const ProjectsSection = () => {
             <Magnetic>
               <Button variant="outline" size="lg" className="rounded-full gap-2 neon-border hover:neon-glow" asChild>
                 <a href="https://github.com/tejastro123" target="_blank" rel="noopener noreferrer">
-                  <Github size={18} /> View All {projects.length} Projects on GitHub
+                  <Github size={18} /> {t("common.view_all_github", { count: projects.length })}
                 </a>
               </Button>
             </Magnetic>

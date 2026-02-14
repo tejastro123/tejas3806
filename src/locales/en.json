@@ -1,0 +1,115 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "experience": "Experience",
+    "projects": "Projects",
+    "skills": "Skills",
+    "services": "Services",
+    "blog": "Blog",
+    "testimonials": "Testimonials",
+    "contact": "Contact"
+  },
+  "hero": {
+    "role": "AIMLDS Engineer & Physicist",
+    "tagline": "Bridging the gap between Theoretical Physics and Computational Reality.",
+    "short": "Dual Degree scholar at BITS Pilani engineering the future of Robotics, Space Tech, and Full-Stack Systems.",
+    "cta": "View My Work",
+    "contact_cta": "Get In Touch"
+  },
+  "about": {
+    "label": "About Me",
+    "heading": "Nice to meet you!",
+    "heading_beyond": "Beyond the Code",
+    "content": "My journey isn't defined solely by lines of code. It's about curiosity, endurance, and the pursuit of the unknown.",
+    "long_bio": "I stand at the convergence of hardware and software. As a Dual Degree student at BITS Pilani, I blend the analytical rigor of Theoretical Physics with the structural precision of Computer Science. Raised in the shadow of launchpads at Sriharikota, my passion for aerospace and robotics is innate. I don't just write code; I build systems that interact with the physical world—from designing Mars Rover avionics to architecting custom Quantum Computing IDEs.",
+    "highlights": {
+      "clean_code": {
+        "title": "Clean Code",
+        "desc": "I write readable, maintainable, well-tested code."
+      },
+      "creative": {
+        "title": "Creative Thinker",
+        "desc": "I love finding elegant solutions to complex problems."
+      },
+      "ship_fast": {
+        "title": "Ship Fast",
+        "desc": "I believe in iterating quickly and delivering value."
+      },
+      "team": {
+        "title": "Team Player",
+        "desc": "Collaboration and communication are my strengths."
+      }
+    }
+  },
+  "sections": {
+    "experience": "The Journey",
+    "projects": "Neural Network of Creations",
+    "skills": "Technical Arsenal",
+    "services": "Capabilities",
+    "blog": "Encoded Thoughts",
+    "testimonials": "Social Proof",
+    "contact": "Open a Channel"
+  },
+  "experience": {
+    "heading": "Experience & Education"
+  },
+  "skills": {
+    "heading": "My Toolbox"
+  },
+  "services": {
+    "heading": "What I Do"
+  },
+  "blog": {
+    "heading": "Latest Dispatches",
+    "read_more": "Read more"
+  },
+  "testimonials": {
+    "heading": "What People Say",
+    "submit_title": "Submit Testimonial",
+    "submit_desc": "Your feedback means the world to me. Submissions are reviewed before being published.",
+    "success_title": "Thank You!",
+    "success_desc": "Your testimonial has been sent to the processing grid.",
+    "transmitting": "Transmitting...",
+    "submit_for_review": "Submit for Review",
+    "no_testimonials": "No testimonials yet. Be the first to share your experience!"
+  },
+  "contact": {
+    "heading": "Let's Connect",
+    "tagline": "Have a project in mind or just want to chat? I'm always open to new opportunities.",
+    "success_title": "Transmission Received!",
+    "success_desc": "Your inquiry has been stored in the mainframe. I will respond shortly.",
+    "send_another": "Send Another Message",
+    "send_button": "Send Message",
+    "message_label": "Message"
+  },
+  "common": {
+    "submit": "Submit",
+    "close": "Close",
+    "loading": "Loading...",
+    "share_story": "Share Your Story",
+    "name": "Name",
+    "role": "Role",
+    "company": "Company",
+    "content": "Content",
+    "avatar_url": "Avatar URL",
+    "demo": "Demo",
+    "code": "Code",
+    "view_all_github": "View All {{count}} Projects on GitHub",
+    "email": "Email",
+    "location": "Location",
+    "optional": "Optional"
+  },
+  "projects": {
+    "heading": "Things I've Built",
+    "filters": {
+      "all": "All",
+      "featured": "Featured",
+      "full_stack": "Full Stack",
+      "ai_ml": "AI/ML",
+      "algorithms": "Algorithms",
+      "quantum": "Quantum Computing",
+      "web_dev": "Web Dev"
+    }
+  }
+}

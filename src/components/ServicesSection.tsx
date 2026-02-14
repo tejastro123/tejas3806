@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
 import { services } from "@/data";
+import { useTranslation } from "react-i18next";
 
 const ServicesSection = () => {
+  const { t } = useTranslation();
   return (
     <section id="services" className="py-24 px-6 relative">
       <div className="container mx-auto max-w-6xl">
@@ -13,10 +15,10 @@ const ServicesSection = () => {
         >
           <span className="inline-flex items-center gap-2 text-sm font-mono text-neon-purple uppercase tracking-wider">
             <span className="w-8 h-px bg-neon-purple/50" />
-            Expertise
+            {t("sections.services")}
             <span className="w-8 h-px bg-neon-purple/50" />
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text">What I Do</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text">{t("services.heading")}</h2>
         </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

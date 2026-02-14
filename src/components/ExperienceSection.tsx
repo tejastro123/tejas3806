@@ -10,6 +10,7 @@ type TimelineItem = {
 };
 
 import { experience } from "@/data";
+import { useTranslation } from "react-i18next";
 
 const typeColors: Record<string, string> = {
   work: "border-neon-cyan bg-neon-cyan",
@@ -19,7 +20,8 @@ const typeColors: Record<string, string> = {
 };
 
 const ExperienceSection = () => {
-  const { displayText, scramble } = useTextScramble("Experience & Education");
+  const { t } = useTranslation();
+  const { displayText, scramble } = useTextScramble(t("experience.heading"));
 
   return (
     <section id="experience" className="py-24 px-6 relative">
@@ -33,7 +35,7 @@ const ExperienceSection = () => {
         >
           <span className="inline-flex items-center gap-2 text-sm font-mono text-neon-orange uppercase tracking-wider">
             <span className="w-8 h-px bg-neon-orange/50" />
-            Journey
+            {t("sections.experience")}
             <span className="w-8 h-px bg-neon-orange/50" />
           </span>
           <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text font-mono min-h-[1.2em]" onMouseEnter={scramble}>

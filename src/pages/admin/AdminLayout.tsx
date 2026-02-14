@@ -3,9 +3,22 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { syncReposToSupabase } from "@/lib/githubSync";
 import {
-  User, FileText, Briefcase, FolderGit2, Wrench, Zap,
-  PenTool, MessageSquare, LogOut, Github, Menu, X, Home,
-  LayoutDashboard, Inbox
+  User,
+  FileText,
+  Briefcase,
+  FolderGit2,
+  Wrench,
+  Zap,
+  PenTool,
+  MessageSquareQuote,
+  LogOut,
+  Github,
+  Menu,
+  X,
+  Home,
+  LayoutDashboard,
+  Inbox,
+  Settings
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -18,7 +31,7 @@ const navItems = [
   { to: "/admin/skills", icon: Wrench, label: "Skills" },
   { to: "/admin/services", icon: Zap, label: "Services" },
   { to: "/admin/blog", icon: PenTool, label: "Blog" },
-  { to: "/admin/testimonials", icon: MessageSquare, label: "Testimonials" },
+  { to: "/admin/testimonials", icon: MessageSquareQuote, label: "Testimonials" },
   { to: "/admin/messages", icon: Inbox, label: "Messages" },
 ];
 
@@ -41,8 +54,9 @@ const AdminLayout = () => {
     try {
       const count = await syncReposToSupabase();
       setSyncMsg(`✅ Synced ${count} repos from GitHub!`);
-    } catch (err: any) {
-      setSyncMsg(`❌ Error: ${err.message}`);
+    } catch (err: unknown) {
+      const error = err as Error;
+      setSyncMsg(`❌ Error: ${error.message}`);
     }
     setSyncing(false);
     setTimeout(() => setSyncMsg(""), 5000);

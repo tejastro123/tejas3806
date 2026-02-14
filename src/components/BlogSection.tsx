@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
 import { blogPosts } from "@/data";
+import { useTranslation } from "react-i18next";
 
 const BlogSection = () => {
+  const { t } = useTranslation();
   return (
     <section id="blog" className="py-24 px-6 relative">
       <div className="container mx-auto max-w-5xl">
@@ -14,10 +16,10 @@ const BlogSection = () => {
         >
           <span className="inline-flex items-center gap-2 text-sm font-mono text-neon-pink uppercase tracking-wider">
             <span className="w-8 h-px bg-neon-pink/50" />
-            Blog
+            {t("nav.blog")}
             <span className="w-8 h-px bg-neon-pink/50" />
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text">Latest Dispatches</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text">{t("blog.heading")}</h2>
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-6">
@@ -59,7 +61,7 @@ const BlogSection = () => {
                   </h3>
                   <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{post.excerpt}</p>
                   <span className="inline-flex items-center gap-1 text-sm font-mono text-neon-cyan group-hover:gap-2 transition-all">
-                    Read more <ArrowRight size={14} />
+                    {t("blog.read_more")} <ArrowRight size={14} />
                   </span>
                 </div>
               </div>

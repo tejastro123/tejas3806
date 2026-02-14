@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { personalInfo, socialLinks } from "@/data";
 import { supabase } from "@/lib/supabaseClient";
+import { useTranslation } from "react-i18next";
 
 const ContactSection = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [isSending, setIsSending] = useState(false);
   const [isSent, setIsSent] = useState(false);
@@ -34,7 +36,7 @@ const ContactSection = () => {
       setFormData({ name: "", email: "", message: "" });
       // Reset success message after 5 seconds
       setTimeout(() => setIsSent(false), 5000);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error sending message:", err);
       setError("Failed to send message. Please try again or use the email link below.");
     } finally {
@@ -53,12 +55,12 @@ const ContactSection = () => {
         >
           <span className="inline-flex items-center gap-2 text-sm font-mono text-neon-green uppercase tracking-wider">
             <span className="w-8 h-px bg-neon-green/50" />
-            Contact
+            {t("nav.contact")}
             <span className="w-8 h-px bg-neon-green/50" />
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text">Let's Connect</h2>
+          <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text">{t("contact.heading")}</h2>
           <p className="text-muted-foreground mt-4 max-w-lg mx-auto">
-            Have a project in mind or just want to chat? I'm always open to new opportunities.
+            {t("contact.tagline")}
           </p>
         </motion.div>
 
@@ -75,7 +77,7 @@ const ContactSection = () => {
                 <Mail size={22} />
               </div>
               <div>
-                <p className="text-xs font-mono text-muted-foreground uppercase tracking-wider">Email</p>
+                <p className="text-xs font-mono text-muted-foreground uppercase tracking-wider">{t("common.email")}</p>
                 <a href={`mailto:${personalInfo.email}`} className="text-foreground hover:text-neon-cyan transition-colors">
                   {personalInfo.email}
                 </a>
@@ -87,7 +89,7 @@ const ContactSection = () => {
                 <MapPin size={22} />
               </div>
               <div>
-                <p className="text-xs font-mono text-muted-foreground uppercase tracking-wider">Location</p>
+                <p className="text-xs font-mono text-muted-foreground uppercase tracking-wider">{t("common.location")}</p>
                 <p className="text-foreground">{personalInfo.location}</p>
               </div>
             </div>
@@ -120,14 +122,14 @@ const ContactSection = () => {
                 <div className="w-20 h-20 rounded-full bg-neon-green/10 border border-neon-green/30 flex items-center justify-center text-neon-green mb-2 shadow-neon animate-pulse">
                   <CheckCircle2 size={40} />
                 </div>
-                <h3 className="text-2xl font-bold gradient-text">Transmission Received!</h3>
-                <p className="text-muted-foreground font-mono text-sm uppercase tracking-tighter">Your inquiry has been stored in the mainframe. I will respond shortly.</p>
+                <h3 className="text-2xl font-bold gradient-text">{t("contact.success_title")}</h3>
+                <p className="text-muted-foreground font-mono text-sm uppercase tracking-tighter">{t("contact.success_desc")}</p>
                 <Button
                   variant="outline"
                   className="mt-6 neon-border"
                   onClick={() => setIsSent(false)}
                 >
-                  Send Another Message
+                  {t("contact.send_another")}
                 </Button>
               </div>
             ) : (
@@ -139,7 +141,7 @@ const ContactSection = () => {
                 )}
 
                 <div>
-                  <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-1 block">Name</label>
+                  <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-1 block">{t("common.name")}</label>
                   <Input
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -150,7 +152,7 @@ const ContactSection = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-1 block">Email</label>
+                  <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-1 block">{t("common.email")}</label>
                   <Input
                     type="email"
                     value={formData.email}
@@ -162,7 +164,7 @@ const ContactSection = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-1 block">Message</label>
+                  <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-1 block">{t("contact.message_label")}</label>
                   <textarea
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -179,7 +181,7 @@ const ContactSection = () => {
                 )}
 
                 <Button type="submit" className="w-full gap-2 neon-glow hover:shadow-neon-lg transition-all" disabled={isSending}>
-                  <Send size={16} /> {isSending ? "Transmitting..." : "Send Message"}
+                  <Send size={16} /> {isSending ? t("common.loading") : t("contact.send_button")}
                 </Button>
               </form>
             )}

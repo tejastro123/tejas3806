@@ -87,10 +87,14 @@ CREATE TABLE blog_posts (
 -- 9. Testimonials
 CREATE TABLE testimonials (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  quote TEXT NOT NULL,
   name TEXT NOT NULL,
-  role TEXT NOT NULL DEFAULT '',
-  sort_order INT DEFAULT 0
+  role TEXT DEFAULT '',
+  company TEXT DEFAULT '',
+  content TEXT NOT NULL,
+  avatar_url TEXT DEFAULT '',
+  is_approved BOOLEAN DEFAULT false,
+  sort_order INT DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now()
 );
 -- 10. Messages (Contact Form)
 CREATE TABLE messages (
@@ -133,9 +137,12 @@ SELECT USING (true);
 CREATE POLICY "Public read" ON blog_posts FOR
 SELECT USING (true);
 CREATE POLICY "Public read" ON testimonials FOR
-SELECT USING (true);
+SELECT USING (is_approved = true);
 -- Public can send messages
 CREATE POLICY "Public insert" ON messages FOR
+INSERT WITH CHECK (true);
+-- Allow public to insert new testimonials (pending approval)
+CREATE POLICY "Allow public to insert testimonials" ON public.testimonials FOR
 INSERT WITH CHECK (true);
 -- Admin write policies (INSERT, UPDATE, DELETE)
 CREATE POLICY "Admin write" ON personal_info FOR ALL USING (auth.role() = 'authenticated');
@@ -146,5 +153,6 @@ CREATE POLICY "Admin write" ON projects FOR ALL USING (auth.role() = 'authentica
 CREATE POLICY "Admin write" ON skills FOR ALL USING (auth.role() = 'authenticated');
 CREATE POLICY "Admin write" ON services FOR ALL USING (auth.role() = 'authenticated');
 CREATE POLICY "Admin write" ON blog_posts FOR ALL USING (auth.role() = 'authenticated');
-CREATE POLICY "Admin write" ON testimonials FOR ALL USING (auth.role() = 'authenticated');
+-- Allow admins to manage all testimonials
+CREATE POLICY "Allow admins to manage all testimonials" ON public.testimonials USING (auth.role() = 'authenticated');
 CREATE POLICY "Admin all" ON messages FOR ALL USING (auth.role() = 'authenticated');

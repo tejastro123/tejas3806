@@ -4,10 +4,13 @@ import { Button } from "@/components/ui/button";
 import { personalInfo, socialLinks } from "@/data";
 import { useTextScramble } from "@/hooks/useTextScramble";
 import { Magnetic } from "@/components/Magnetic";
+import { useTranslation } from "react-i18next";
+import { ResumeDownloadButton } from "./ResumeDownloadButton";
 
 const HeroSection = () => {
+  const { t } = useTranslation();
   const { displayText: nameText, scramble: scrambleName } = useTextScramble(personalInfo.name);
-  const { displayText: roleText, scramble: scrambleRole } = useTextScramble(personalInfo.role);
+  const { displayText: roleText, scramble: scrambleRole } = useTextScramble(t("hero.role"));
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-6">
@@ -83,7 +86,6 @@ const HeroSection = () => {
           className="mb-8 relative inline-block"
         >
           <div className="w-32 h-32 md:w-40 md:h-40 rounded-full p-1 relative">
-            {/* Neon ring around avatar */}
             <div className="absolute inset-0 rounded-full border-2 border-neon-cyan/30 animate-pulse-ring" />
             <div className="absolute -inset-2 rounded-full border border-neon-purple/20 animate-spin-slow" />
             <div className="w-full h-full rounded-full overflow-hidden glass">
@@ -124,7 +126,7 @@ const HeroSection = () => {
           transition={{ duration: 0.6, delay: 0.35 }}
           className="text-lg text-neon-purple/70 mb-6 italic"
         >
-          {personalInfo.bio.tagline}
+          {t("hero.tagline")}
         </motion.p>
 
         <motion.p
@@ -133,7 +135,7 @@ const HeroSection = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-lg text-muted-foreground mb-8 max-w-lg mx-auto leading-relaxed"
         >
-          {personalInfo.bio.short}
+          {t("hero.short")}
         </motion.p>
 
         <motion.div
@@ -144,14 +146,16 @@ const HeroSection = () => {
         >
           <Magnetic>
             <Button size="lg" className="rounded-full px-8 font-display bg-primary text-primary-foreground neon-glow hover:shadow-neon-lg transition-all" asChild>
-              <a href="#projects">View My Work</a>
+              <a href="#projects">{t("hero.cta")}</a>
             </Button>
           </Magnetic>
           <Magnetic>
             <Button size="lg" variant="outline" className="rounded-full px-8 font-display neon-border" asChild>
-              <a href="#contact">Get In Touch</a>
+              <a href="#contact">{t("hero.contact_cta")}</a>
             </Button>
           </Magnetic>
+
+          <ResumeDownloadButton />
         </motion.div>
 
         <motion.div
