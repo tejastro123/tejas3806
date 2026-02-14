@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { testimonials } from "@/data";
 
+import { ThreeDText } from "@/components/ThreeDText";
+
 const TestimonialsSection = () => {
   const [current, setCurrent] = useState(0);
 
@@ -23,8 +25,11 @@ const TestimonialsSection = () => {
             Inspiration
             <span className="w-8 h-px bg-neon-purple/50" />
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text">Words I Live By</h2>
+          <ThreeDText variant="purple" intensity={10}>
+            <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text">Words I Live By</h2>
+          </ThreeDText>
         </motion.div>
+
 
         <div className="relative">
           <div className="glass neon-border rounded-3xl p-10 md:p-16 text-center relative overflow-hidden holo-shine">

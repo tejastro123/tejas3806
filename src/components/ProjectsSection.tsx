@@ -20,6 +20,8 @@ import { projects } from "@/data";
 
 const filters = ["All", "Featured", "Full Stack", "AI/ML", "Algorithms", "Quantum Computing", "Web Dev"];
 
+import { ThreeDText } from "@/components/ThreeDText";
+
 const ProjectsSection = () => {
   const [active, setActive] = useState("All");
   const { displayText, scramble } = useTextScramble("Things I've Built");
@@ -45,10 +47,13 @@ const ProjectsSection = () => {
             Projects
             <span className="w-8 h-px bg-neon-cyan/50" />
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text font-mono min-h-[1.2em]" onMouseEnter={scramble}>
-            {displayText}
-          </h2>
+          <ThreeDText intensity={12}>
+            <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text font-mono min-h-[1.2em]" onMouseEnter={scramble}>
+              {displayText}
+            </h2>
+          </ThreeDText>
         </motion.div>
+
 
         {/* Filter tabs */}
         <div className="flex flex-wrap justify-center gap-2 mb-12">

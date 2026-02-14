@@ -15,6 +15,8 @@ const neonColors = [
   "from-neon-pink to-neon-pink",
 ];
 
+import { ThreeDText } from "@/components/ThreeDText";
+
 const SkillsSection = () => {
   return (
     <section id="skills" className="py-24 px-6 relative">
@@ -30,8 +32,11 @@ const SkillsSection = () => {
             Skills
             <span className="w-8 h-px bg-neon-cyan/50" />
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text">My Toolbox</h2>
+          <ThreeDText intensity={10}>
+            <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text">My Toolbox</h2>
+          </ThreeDText>
         </motion.div>
+
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {skills.map((cat, ci) => {

@@ -11,6 +11,8 @@ const highlights = [
   { icon: Coffee, title: "Team Player", desc: "Collaboration and communication are my strengths." },
 ];
 
+import { ThreeDText } from "@/components/ThreeDText";
+
 const AboutSection = () => {
   const { displayText, scramble } = useTextScramble("Nice to meet you!");
 
@@ -30,10 +32,13 @@ const AboutSection = () => {
             About Me
             <span className="w-8 h-px bg-neon-green/50" />
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text font-mono min-h-[1.2em]" onMouseEnter={scramble}>
-            {displayText} <span className="inline-block animate-float">👋</span>
-          </h2>
+          <ThreeDText intensity={10}>
+            <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text font-mono min-h-[1.2em]" onMouseEnter={scramble}>
+              {displayText} <span className="inline-block animate-float">👋</span>
+            </h2>
+          </ThreeDText>
         </motion.div>
+
 
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Avatar */}

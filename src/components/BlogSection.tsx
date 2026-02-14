@@ -2,6 +2,8 @@ import { motion } from "framer-motion";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
 import { blogPosts } from "@/data";
 
+import { ThreeDText } from "@/components/ThreeDText";
+
 const BlogSection = () => {
   return (
     <section id="blog" className="py-24 px-6 relative">
@@ -17,8 +19,11 @@ const BlogSection = () => {
             Blog
             <span className="w-8 h-px bg-neon-pink/50" />
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text">Latest Dispatches</h2>
+          <ThreeDText intensity={12}>
+            <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text">Latest Dispatches</h2>
+          </ThreeDText>
         </motion.div>
+
 
         <div className="grid md:grid-cols-2 gap-6">
           {blogPosts.map((post, i) => (

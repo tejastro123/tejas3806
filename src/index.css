@@ -217,6 +217,25 @@
     pointer-events: none;
   }
 
+  /* 3D Extruded Text */
+  .text-3d {
+    text-shadow:
+      1px 1px 0px hsl(var(--neon-cyan) / 0.4),
+      2px 2px 0px hsl(var(--neon-cyan) / 0.3),
+      3px 3px 0px hsl(var(--neon-cyan) / 0.2),
+      4px 4px 0px hsl(var(--neon-cyan) / 0.1),
+      5px 5px 15px rgba(0, 0, 0, 0.8);
+  }
+
+  .text-3d-purple {
+    text-shadow:
+      1px 1px 0px hsl(var(--neon-purple) / 0.4),
+      2px 2px 0px hsl(var(--neon-purple) / 0.3),
+      3px 3px 0px hsl(var(--neon-purple) / 0.2),
+      4px 4px 0px hsl(var(--neon-purple) / 0.1),
+      5px 5px 15px rgba(0, 0, 0, 0.8);
+  }
+
   /* Code typing cursor */
   .typing-cursor::after {
     content: '|';
