@@ -6,8 +6,6 @@ import { Input } from "@/components/ui/input";
 import { personalInfo, socialLinks } from "@/data";
 import { supabase } from "@/lib/supabaseClient";
 
-import { ThreeDText } from "@/components/ThreeDText";
-
 const ContactSection = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [isSending, setIsSending] = useState(false);
@@ -58,14 +56,11 @@ const ContactSection = () => {
             Contact
             <span className="w-8 h-px bg-neon-green/50" />
           </span>
-          <ThreeDText intensity={10}>
-            <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text">Let's Connect</h2>
-          </ThreeDText>
+          <h2 className="text-4xl md:text-5xl font-bold mt-3 gradient-text">Let's Connect</h2>
           <p className="text-muted-foreground mt-4 max-w-lg mx-auto">
             Have a project in mind or just want to chat? I'm always open to new opportunities.
           </p>
         </motion.div>
-
 
         <div className="grid md:grid-cols-2 gap-8">
           {/* Contact info */}

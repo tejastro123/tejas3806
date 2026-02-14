@@ -5,8 +5,6 @@ import { personalInfo, socialLinks } from "@/data";
 import { useTextScramble } from "@/hooks/useTextScramble";
 import { Magnetic } from "@/components/Magnetic";
 
-import { ThreeDText } from "@/components/ThreeDText";
-
 const HeroSection = () => {
   const { displayText: nameText, scramble: scrambleName } = useTextScramble(personalInfo.name);
   const { displayText: roleText, scramble: scrambleRole } = useTextScramble(personalInfo.role);
@@ -105,9 +103,7 @@ const HeroSection = () => {
           onViewportEnter={scrambleName}
           className="text-5xl md:text-7xl font-bold tracking-tight mb-4 font-display"
         >
-          <ThreeDText intensity={15} className="w-full">
-            <span className="gradient-text font-mono" onMouseEnter={scrambleName}>{nameText}</span>
-          </ThreeDText>
+          <span className="gradient-text font-mono" onMouseEnter={scrambleName}>{nameText}</span>
         </motion.h1>
 
         <motion.p
@@ -117,13 +113,10 @@ const HeroSection = () => {
           onViewportEnter={scrambleRole}
           className="text-xl md:text-2xl text-neon-cyan/80 mb-2 font-mono font-medium"
         >
-          <ThreeDText variant="purple" intensity={10}>
-            {"< "}
-            <span onMouseEnter={scrambleRole}>{roleText}</span>
-            {" />"}
-          </ThreeDText>
+          {"< "}
+          <span onMouseEnter={scrambleRole}>{roleText}</span>
+          {" />"}
         </motion.p>
-
 
         <motion.p
           initial={{ opacity: 0, y: 30 }}
