@@ -24,14 +24,15 @@ const ProjectsSection = () => {
   const [active, setActive] = useState("All");
   const { displayText, scramble } = useTextScramble(t("projects.heading"));
 
-  const filterConfigs = [
+  // Build filter list dynamically from actual project categories
+  const baseFilters = [
     { id: "All", label: t("projects.filters.all") },
     { id: "Featured", label: t("projects.filters.featured") },
-    { id: "Full Stack", label: t("projects.filters.full_stack") },
-    { id: "AI/ML", label: t("projects.filters.ai_ml") },
-    { id: "Algorithms", label: t("projects.filters.algorithms") },
-    { id: "Quantum Computing", label: t("projects.filters.quantum") },
-    { id: "Web Dev", label: t("projects.filters.web_dev") },
+  ];
+  const dynamicCategories = Array.from(new Set(projects.map((p) => p.category))).sort();
+  const filterConfigs = [
+    ...baseFilters,
+    ...dynamicCategories.map((c) => ({ id: c, label: c })),
   ];
 
   const filtered = active === "All"

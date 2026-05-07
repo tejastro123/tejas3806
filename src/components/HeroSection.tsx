@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowDown, Terminal, Cpu, Code2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { personalInfo, socialLinks } from "@/data";
@@ -6,63 +6,83 @@ import { useTextScramble } from "@/hooks/useTextScramble";
 import { Magnetic } from "@/components/Magnetic";
 import { useTranslation } from "react-i18next";
 import { ResumeDownloadButton } from "./ResumeDownloadButton";
+import { useEffect } from "react";
 
 const HeroSection = () => {
   const { t } = useTranslation();
   const { displayText: nameText, scramble: scrambleName } = useTextScramble(personalInfo.name);
   const { displayText: roleText, scramble: scrambleRole } = useTextScramble(t("hero.role"));
 
+  // Mouse parallax
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const sx = useSpring(mx, { stiffness: 60, damping: 20 });
+  const sy = useSpring(my, { stiffness: 60, damping: 20 });
+  const px1 = useTransform(sx, (v) => v * 30);
+  const py1 = useTransform(sy, (v) => v * 30);
+  const px2 = useTransform(sx, (v) => v * -50);
+  const py2 = useTransform(sy, (v) => v * -50);
+  const px3 = useTransform(sx, (v) => v * 20);
+  const py3 = useTransform(sy, (v) => v * 20);
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      mx.set((e.clientX / window.innerWidth) - 0.5);
+      my.set((e.clientY / window.innerHeight) - 0.5);
+    };
+    window.addEventListener("mousemove", onMove);
+    return () => window.removeEventListener("mousemove", onMove);
+  }, [mx, my]);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-6">
       {/* Animated tech grid background */}
       <div className="absolute inset-0 -z-10 tech-grid opacity-30" />
 
+      {/* Aurora gradient blobs */}
+      <motion.div
+        style={{ x: px2, y: py2 }}
+        className="absolute -z-10 top-[-10%] left-[-10%] w-[40rem] h-[40rem] rounded-full bg-neon-purple/20 blur-3xl"
+      />
+      <motion.div
+        style={{ x: px1, y: py1 }}
+        className="absolute -z-10 bottom-[-15%] right-[-10%] w-[35rem] h-[35rem] rounded-full bg-neon-cyan/20 blur-3xl"
+      />
+      <motion.div
+        style={{ x: px3, y: py3 }}
+        className="absolute -z-10 top-[40%] left-[40%] w-[20rem] h-[20rem] rounded-full bg-neon-pink/15 blur-3xl"
+      />
+
       {/* 3D Floating geometric shapes */}
       <div className="absolute inset-0 -z-5 overflow-hidden pointer-events-none">
-        {/* Rotating ring */}
-        <div className="absolute top-[15%] right-[10%] w-40 h-40 border border-neon-cyan/20 rounded-full animate-spin-slow" />
-        <div className="absolute top-[16%] right-[11%] w-36 h-36 border border-neon-purple/15 rounded-full animate-spin-slow" style={{ animationDirection: "reverse", animationDuration: "25s" }} />
+        <motion.div style={{ x: px1, y: py1 }} className="absolute top-[15%] right-[10%] w-40 h-40 border border-neon-cyan/20 rounded-full animate-spin-slow" />
+        <motion.div style={{ x: px1, y: py1 }} className="absolute top-[16%] right-[11%] w-36 h-36 border border-neon-purple/15 rounded-full animate-spin-slow" />
 
-        {/* Floating cubes */}
         <motion.div
-          animate={{ y: [-10, 10, -10], rotateZ: [0, 90, 0] }}
+          style={{ x: px2, y: py2 }}
+          animate={{ rotateZ: [0, 90, 0] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
           className="absolute top-[30%] left-[8%] w-12 h-12 border border-neon-cyan/20 rotate-45"
-          style={{ perspective: "200px", transform: "rotateX(45deg) rotateZ(45deg)" }}
         />
 
         <motion.div
-          animate={{ y: [0, -20, 0], rotateZ: [0, -45, 0] }}
+          style={{ x: px3, y: py3 }}
+          animate={{ rotateZ: [0, -45, 0] }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
           className="absolute bottom-[25%] right-[12%] w-8 h-8 bg-neon-purple/10 border border-neon-purple/20"
-          style={{ transform: "rotateX(30deg) rotateY(30deg)" }}
         />
 
-        {/* Glowing orbs */}
-        <div className="absolute top-[20%] left-[25%] w-2 h-2 bg-neon-cyan rounded-full animate-pulse shadow-neon" />
-        <div className="absolute top-[60%] right-[20%] w-3 h-3 bg-neon-purple rounded-full animate-pulse shadow-neon" style={{ animationDelay: "1s" }} />
-        <div className="absolute bottom-[35%] left-[15%] w-1.5 h-1.5 bg-neon-green rounded-full animate-pulse" style={{ animationDelay: "2s" }} />
+        <motion.div style={{ x: px2, y: py2 }} className="absolute top-[20%] left-[25%] w-2 h-2 bg-neon-cyan rounded-full animate-pulse shadow-neon" />
+        <motion.div style={{ x: px1, y: py1 }} className="absolute top-[60%] right-[20%] w-3 h-3 bg-neon-purple rounded-full animate-pulse shadow-neon" />
+        <motion.div style={{ x: px3, y: py3 }} className="absolute bottom-[35%] left-[15%] w-1.5 h-1.5 bg-neon-green rounded-full animate-pulse" />
 
-        {/* Tech icons floating */}
-        <motion.div
-          animate={{ y: [-5, 15, -5] }}
-          transition={{ duration: 6, repeat: Infinity }}
-          className="absolute top-[45%] left-[5%] text-neon-cyan/10"
-        >
+        <motion.div style={{ x: px1, y: py1 }} className="absolute top-[45%] left-[5%] text-neon-cyan/15">
           <Terminal size={40} />
         </motion.div>
-        <motion.div
-          animate={{ y: [10, -10, 10] }}
-          transition={{ duration: 7, repeat: Infinity }}
-          className="absolute top-[25%] right-[5%] text-neon-purple/10"
-        >
+        <motion.div style={{ x: px2, y: py2 }} className="absolute top-[25%] right-[5%] text-neon-purple/15">
           <Cpu size={36} />
         </motion.div>
-        <motion.div
-          animate={{ y: [-8, 12, -8] }}
-          transition={{ duration: 5, repeat: Infinity }}
-          className="absolute bottom-[20%] left-[40%] text-neon-green/10"
-        >
+        <motion.div style={{ x: px3, y: py3 }} className="absolute bottom-[20%] left-[40%] text-neon-green/15">
           <Code2 size={32} />
         </motion.div>
       </div>
