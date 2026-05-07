@@ -349,11 +349,11 @@ html {
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(225 15% 6%);
+  background: hsl(var(--background));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(225 12% 20%);
+  background: hsl(var(--muted));
   border-radius: 3px;
 }
 

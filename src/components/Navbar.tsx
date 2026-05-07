@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Terminal } from "lucide-react";
+import { Menu, X, Terminal, Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { personalInfo } from "@/data";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useTheme } from "@/hooks/useTheme";
 
 const Navbar = () => {
   const { t } = useTranslation();
+  const { theme, toggle } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -58,11 +60,26 @@ const Navbar = () => {
             ))}
           </div>
           <div className="h-6 w-px bg-border/50 mx-2" />
+          <button
+            onClick={toggle}
+            className="p-2 rounded-lg glass neon-border text-foreground/70 hover:text-neon-cyan transition-all"
+            aria-label="Toggle theme"
+            title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+          >
+            {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
           <LanguageSwitcher />
         </div>
 
         {/* Mobile toggle */}
         <div className="flex items-center gap-2 md:hidden">
+          <button
+            onClick={toggle}
+            className="p-2 rounded-lg glass neon-border text-foreground/70"
+            aria-label="Toggle theme"
+          >
+            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
           <LanguageSwitcher />
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
