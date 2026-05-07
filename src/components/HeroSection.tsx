@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowDown, Terminal, Cpu, Code2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { personalInfo, socialLinks } from "@/data";
@@ -6,11 +6,33 @@ import { useTextScramble } from "@/hooks/useTextScramble";
 import { Magnetic } from "@/components/Magnetic";
 import { useTranslation } from "react-i18next";
 import { ResumeDownloadButton } from "./ResumeDownloadButton";
+import { useEffect } from "react";
 
 const HeroSection = () => {
   const { t } = useTranslation();
   const { displayText: nameText, scramble: scrambleName } = useTextScramble(personalInfo.name);
   const { displayText: roleText, scramble: scrambleRole } = useTextScramble(t("hero.role"));
+
+  // Mouse parallax
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const sx = useSpring(mx, { stiffness: 60, damping: 20 });
+  const sy = useSpring(my, { stiffness: 60, damping: 20 });
+  const px1 = useTransform(sx, (v) => v * 30);
+  const py1 = useTransform(sy, (v) => v * 30);
+  const px2 = useTransform(sx, (v) => v * -50);
+  const py2 = useTransform(sy, (v) => v * -50);
+  const px3 = useTransform(sx, (v) => v * 20);
+  const py3 = useTransform(sy, (v) => v * 20);
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      mx.set((e.clientX / window.innerWidth) - 0.5);
+      my.set((e.clientY / window.innerHeight) - 0.5);
+    };
+    window.addEventListener("mousemove", onMove);
+    return () => window.removeEventListener("mousemove", onMove);
+  }, [mx, my]);
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-6">
