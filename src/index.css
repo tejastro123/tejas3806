@@ -5,8 +5,8 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    /* Force dark theme only */
+  :root,
+  .dark {
     --background: 225 15% 6%;
     --foreground: 210 20% 92%;
 
@@ -65,6 +65,36 @@
     --shadow-xl: 0 16px 40px -6px hsl(0 0% 0% / 0.5);
     --shadow-2xl: 0 24px 50px -8px hsl(0 0% 0% / 0.6);
   }
+
+  .light {
+    --background: 210 40% 98%;
+    --foreground: 225 25% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 225 25% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 225 25% 12%;
+    --primary: 195 95% 42%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 270 70% 55%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 220 15% 92%;
+    --muted-foreground: 225 10% 38%;
+    --accent: 160 70% 38%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 15% 86%;
+    --input: 220 15% 86%;
+    --ring: 195 95% 42%;
+    --neon-cyan: 195 95% 42%;
+    --neon-purple: 270 70% 55%;
+    --neon-green: 160 70% 38%;
+    --neon-pink: 330 75% 50%;
+    --neon-orange: 25 90% 50%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 225 25% 12%;
+    --sidebar-border: 220 15% 86%;
+  }
 }
 
 @layer base {
@@ -104,17 +134,17 @@
 
   /* Glassmorphism card */
   .glass {
-    background: hsl(225 15% 10% / 0.6);
+    background: hsl(var(--card) / 0.6);
     -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
-    border: 1px solid hsl(225 12% 20% / 0.5);
+    border: 1px solid hsl(var(--border) / 0.6);
   }
 
   .glass-strong {
-    background: hsl(225 15% 8% / 0.8);
+    background: hsl(var(--background) / 0.8);
     -webkit-backdrop-filter: blur(30px);
     backdrop-filter: blur(30px);
-    border: 1px solid hsl(195 100% 50% / 0.1);
+    border: 1px solid hsl(var(--neon-cyan) / 0.15);
   }
 
   /* Neon glow effects */
@@ -311,7 +341,6 @@
 
 html {
   scroll-behavior: smooth;
-  color-scheme: dark;
 }
 
 /* Custom scrollbar */
