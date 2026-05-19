@@ -1,0 +1,17 @@
+# Tejas Mellimpudi Portfolio
+
+> Personal portfolio of Mellimpudi Tejas — a BITS Pilani dual degree student (M.Sc. Physics + B.E. Computer Science) building robotics, quantum computing tools, and full-stack web systems.
+
+## Pages
+
+- [Home](/): Hero, about, skills, services, projects, experience, testimonials, blog, and contact form.
+
+## About
+
+Tejas is an avionics & electronics engineer on the Vanguard Mars Rover team, a robotics engineer with the ARC club, and a research associate with the Spectrum physics club at BITS Pilani. Featured projects include QUICKIDE (a quantum programming IDE), LIVEMART (MERN e-commerce), My-QuCPL (custom quantum programming language), and Agentic-AI-Lynq.
+
+## Contact
+
+- Email: tejas.mellimpudi@gmail.com
+- GitHub: https://github.com/tejastro123
+- LinkedIn: https://www.linkedin.com/in/tejas-mellimpudi/
