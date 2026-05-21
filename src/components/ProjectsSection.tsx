@@ -4,6 +4,7 @@ import { ExternalLink, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTextScramble } from "@/hooks/useTextScramble";
 import { Magnetic } from "@/components/Magnetic";
+import { trackEvent } from "@/lib/analytics";
 
 type Project = {
   title: string;
@@ -156,7 +157,12 @@ const ProjectsSection = () => {
                       {project.demo && project.demo !== "#" && (
                         <Magnetic>
                           <Button size="sm" variant="outline" className="rounded-full text-xs gap-1.5 flex-1 neon-border hover:text-neon-cyan" asChild>
-                            <a href={project.demo} target="_blank" rel="noopener noreferrer">
+                            <a
+                              href={project.demo}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={() => trackEvent("project_click", project.title, { destination: "demo" })}
+                            >
                               <ExternalLink size={14} /> {t("common.demo")}
                             </a>
                           </Button>
@@ -165,7 +171,12 @@ const ProjectsSection = () => {
                       {project.github && (
                         <Magnetic>
                           <Button size="sm" variant="ghost" className="rounded-full text-xs gap-1.5 flex-1 hover:text-neon-purple" asChild>
-                            <a href={project.github} target="_blank" rel="noopener noreferrer">
+                            <a
+                              href={project.github}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={() => trackEvent("project_click", project.title, { destination: "github" })}
+                            >
                               <Github size={14} /> {t("common.code")}
                             </a>
                           </Button>

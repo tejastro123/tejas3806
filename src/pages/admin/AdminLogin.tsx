@@ -25,9 +25,11 @@ const AdminLogin = () => {
     setError("");
     setLoading(true);
 
-    const { error } = await signIn(email, password);
-    if (error) {
-      setError(error.message);
+    const { error: signInError } = await signIn(email, password);
+    if (signInError) {
+      // Generic message to avoid leaking whether the account exists
+      console.warn("Sign-in failed:", signInError.message);
+      setError("Invalid email or password. Please try again.");
       setLoading(false);
     } else {
       navigate("/admin", { replace: true });

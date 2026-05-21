@@ -4,6 +4,7 @@ import { useResumeData } from "@/hooks/useResumeData";
 import { Button } from "@/components/ui/button";
 import { FileDown, Loader2 } from "lucide-react";
 import { Magnetic } from "./Magnetic";
+import { trackEvent } from "@/lib/analytics";
 
 export const ResumeDownloadButton = () => {
   const { data, loading, error } = useResumeData();
@@ -30,6 +31,7 @@ export const ResumeDownloadButton = () => {
       <PDFDownloadLink
         document={<ResumePDF data={data} />}
         fileName={`Resume_Tejas_Mellimpudi.pdf`}
+        onClick={() => trackEvent("resume_download")}
       >
         {({ loading: pdfLoading }) => (
           <Button
