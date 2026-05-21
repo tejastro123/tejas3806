@@ -4,6 +4,7 @@ import { ExternalLink, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTextScramble } from "@/hooks/useTextScramble";
 import { Magnetic } from "@/components/Magnetic";
+import { trackEvent } from "@/lib/analytics";
 
 type Project = {
   title: string;
