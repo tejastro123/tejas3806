@@ -19,6 +19,8 @@ import AdminServices from "./pages/admin/AdminServices";
 import AdminBlog from "./pages/admin/AdminBlog";
 import AdminTestimonials from "./pages/admin/AdminTestimonials";
 import AdminMessages from "./pages/admin/AdminMessages";
+import AdminAnalytics from "./pages/admin/AdminAnalytics";
+import BlogPost from "./pages/BlogPost";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +34,7 @@ const App = () => (
           <Routes>
             {/* Public portfolio */}
             <Route path="/" element={<Index />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
 
             {/* Admin login (no auth needed) */}
             <Route path="/admin/login" element={<AdminLogin />} />
@@ -55,6 +58,7 @@ const App = () => (
               <Route path="blog" element={<AdminBlog />} />
               <Route path="testimonials" element={<AdminTestimonials />} />
               <Route path="messages" element={<AdminMessages />} />
+              <Route path="analytics" element={<AdminAnalytics />} />
             </Route>
 
 
