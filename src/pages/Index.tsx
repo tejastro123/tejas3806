@@ -15,10 +15,15 @@ import CustomCursor from "@/components/CustomCursor";
 import Terminal from "@/components/Terminal";
 import { Terminal as TerminalIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { trackEvent } from "@/lib/analytics";
 
 const Index = () => {
   const glowRef = useRef<HTMLDivElement>(null);
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
+
+  useEffect(() => {
+    trackEvent("page_view", "home");
+  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
