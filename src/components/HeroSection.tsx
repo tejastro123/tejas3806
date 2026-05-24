@@ -112,6 +112,10 @@ const HeroSection = () => {
               <img
                 src={personalInfo.avatar}
                 alt={personalInfo.name}
+                width={160}
+                height={160}
+                fetchPriority="high"
+                decoding="async"
                 className="w-full h-full rounded-full object-cover"
               />
             </div>
