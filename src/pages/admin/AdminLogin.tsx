@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { motion } from "framer-motion";
@@ -15,8 +15,13 @@ const AdminLogin = () => {
   const navigate = useNavigate();
 
   // If already logged in, redirect
+  useEffect(() => {
+    if (user) {
+      navigate("/admin", { replace: true });
+    }
+  }, [user, navigate]);
+
   if (user) {
-    navigate("/admin", { replace: true });
     return null;
   }
 
