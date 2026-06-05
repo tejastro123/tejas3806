@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabaseClient";
+import { apiClient } from "@/lib/apiClient";
 
 const GITHUB_USERNAME = "tejastro123";
 const GITHUB_API = `https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated`;
@@ -37,7 +37,7 @@ export const syncReposToSupabase = async () => {
 
   // Upsert: match on github URL to avoid duplicates
   for (const project of projects) {
-    const { data: existing } = await supabase
+    const { data: existing } = await apiClient
       .from("projects")
       .select("id, featured, image, sort_order")
       .eq("github", project.github)
@@ -45,7 +45,7 @@ export const syncReposToSupabase = async () => {
 
     if (existing) {
       // Update but preserve featured/image/sort_order set by admin
-      await supabase
+      await apiClient
         .from("projects")
         .update({
           title: project.title,
@@ -56,7 +56,7 @@ export const syncReposToSupabase = async () => {
         })
         .eq("id", existing.id);
     } else {
-      await supabase.from("projects").insert(project);
+      await apiClient.from("projects").insert(project);
     }
   }
 

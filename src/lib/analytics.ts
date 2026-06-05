@@ -1,4 +1,4 @@
-import { supabase } from "./supabaseClient";
+import { apiClient } from "./apiClient";
 
 const SESSION_KEY = "portfolio_session_id";
 
@@ -27,7 +27,7 @@ export const trackEvent = async (
 ) => {
   try {
     if (typeof window === "undefined") return;
-    await supabase.from("analytics_events").insert({
+    await apiClient.from("analytics_events").insert({
       event_type,
       event_label: event_label ?? null,
       path: window.location.pathname,

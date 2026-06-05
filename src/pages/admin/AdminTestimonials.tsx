@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { apiClient } from "@/lib/apiClient";
 import {
   CheckCircle2,
   XCircle,
@@ -34,7 +34,7 @@ const AdminTestimonials = () => {
   const fetchTestimonials = useCallback(async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      const { data, error } = await apiClient
         .from("testimonials")
         .select("*")
         .order("created_at", { ascending: false });
@@ -59,7 +59,7 @@ const AdminTestimonials = () => {
 
   const toggleApproval = async (id: string, currentStatus: boolean) => {
     try {
-      const { error } = await supabase
+      const { error } = await apiClient
         .from("testimonials")
         .update({ is_approved: !currentStatus })
         .eq("id", id);
@@ -87,7 +87,7 @@ const AdminTestimonials = () => {
     if (!confirm("Are you sure you want to delete this testimonial?")) return;
 
     try {
-      const { error } = await supabase
+      const { error } = await apiClient
         .from("testimonials")
         .delete()
         .eq("id", id);

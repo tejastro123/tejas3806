@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { apiClient } from "@/lib/apiClient";
 import { Mail, MailOpen, Trash2, Calendar, User, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -21,7 +21,7 @@ const AdminMessages = () => {
   const fetchMessages = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
+      const { data, error } = await apiClient
         .from("messages")
         .select("*")
         .order("created_at", { ascending: false });
@@ -46,7 +46,7 @@ const AdminMessages = () => {
 
   const toggleRead = async (id: string, currentStatus: boolean) => {
     try {
-      const { error } = await supabase
+      const { error } = await apiClient
         .from("messages")
         .update({ is_read: !currentStatus })
         .eq("id", id);
@@ -67,7 +67,7 @@ const AdminMessages = () => {
     if (!confirm("Are you sure you want to delete this message?")) return;
 
     try {
-      const { error } = await supabase
+      const { error } = await apiClient
         .from("messages")
         .delete()
         .eq("id", id);

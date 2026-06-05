@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { ArrowLeft, Calendar, Clock } from "lucide-react";
 import DOMPurify from "dompurify";
-import { supabase } from "@/lib/supabaseClient";
+import { apiClient } from "@/lib/apiClient";
 
 interface Post {
   id: string;
@@ -33,7 +33,7 @@ const BlogPost = () => {
 
   useEffect(() => {
     if (!slug) return;
-    supabase
+    apiClient
       .from("blog_posts")
       .select("*")
       .eq("slug", slug)

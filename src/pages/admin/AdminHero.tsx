@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { apiClient } from "@/lib/apiClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Save } from "lucide-react";
@@ -20,7 +20,7 @@ const AdminHero = () => {
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    supabase
+    apiClient
       .from("personal_info")
       .select("*")
       .limit(1)
@@ -34,13 +34,13 @@ const AdminHero = () => {
     setSaving(true);
     setMsg("");
     if (data.id) {
-      const { error } = await supabase
+      const { error } = await apiClient
         .from("personal_info")
         .update({ ...data, updated_at: new Date().toISOString() })
         .eq("id", data.id);
       setMsg(error ? `❌ ${error.message}` : "✅ Saved!");
     } else {
-      const { data: newRow, error } = await supabase
+      const { data: newRow, error } = await apiClient
         .from("personal_info")
         .insert({ ...data })
         .select()

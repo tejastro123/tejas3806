@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { apiClient } from "@/lib/apiClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Save, Plus, Trash2, GripVertical } from "lucide-react";
@@ -33,7 +33,7 @@ const AdminExperience = () => {
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    supabase
+    apiClient
       .from("experience")
       .select("*")
       .order("sort_order")
@@ -48,9 +48,9 @@ const AdminExperience = () => {
 
     for (const item of items) {
       if (item.id) {
-        await supabase.from("experience").update(item).eq("id", item.id);
+        await apiClient.from("experience").update(item).eq("id", item.id);
       } else {
-        const { data } = await supabase.from("experience").insert(item).select().single();
+        const { data } = await apiClient.from("experience").insert(item).select().single();
         if (data) item.id = data.id;
       }
     }
@@ -65,7 +65,7 @@ const AdminExperience = () => {
   const removeItem = async (index: number) => {
     const item = items[index];
     if (item.id) {
-      await supabase.from("experience").delete().eq("id", item.id);
+      await apiClient.from("experience").delete().eq("id", item.id);
     }
     setItems(items.filter((_, i) => i !== index));
   };

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { apiClient } from "@/lib/apiClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Save, Plus, Trash2 } from "lucide-react";
@@ -19,7 +19,7 @@ const AdminSkills = () => {
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    supabase.from("skills").select("*").order("sort_order").then(({ data }) => {
+    apiClient.from("skills").select("*").order("sort_order").then(({ data }) => {
       if (data) setCats(data);
     });
   }, []);
@@ -29,9 +29,9 @@ const AdminSkills = () => {
     setMsg("");
     for (const cat of cats) {
       if (cat.id) {
-        await supabase.from("skills").update(cat).eq("id", cat.id);
+        await apiClient.from("skills").update(cat).eq("id", cat.id);
       } else {
-        const { data } = await supabase.from("skills").insert(cat).select().single();
+        const { data } = await apiClient.from("skills").insert(cat).select().single();
         if (data) cat.id = data.id;
       }
     }
@@ -45,7 +45,7 @@ const AdminSkills = () => {
 
   const removeCat = async (i: number) => {
     const cat = cats[i];
-    if (cat.id) await supabase.from("skills").delete().eq("id", cat.id);
+    if (cat.id) await apiClient.from("skills").delete().eq("id", cat.id);
     setCats(cats.filter((_, idx) => idx !== i));
   };
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { apiClient } from "@/lib/apiClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Save, Plus, Trash2 } from "lucide-react";
@@ -18,7 +18,7 @@ const AdminServices = () => {
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    supabase.from("services").select("*").order("sort_order").then(({ data }) => {
+    apiClient.from("services").select("*").order("sort_order").then(({ data }) => {
       if (data) setItems(data);
     });
   }, []);
@@ -28,9 +28,9 @@ const AdminServices = () => {
     setMsg("");
     for (const item of items) {
       if (item.id) {
-        await supabase.from("services").update(item).eq("id", item.id);
+        await apiClient.from("services").update(item).eq("id", item.id);
       } else {
-        const { data } = await supabase.from("services").insert(item).select().single();
+        const { data } = await apiClient.from("services").insert(item).select().single();
         if (data) item.id = data.id;
       }
     }
@@ -44,7 +44,7 @@ const AdminServices = () => {
 
   const removeItem = async (i: number) => {
     const item = items[i];
-    if (item.id) await supabase.from("services").delete().eq("id", item.id);
+    if (item.id) await apiClient.from("services").delete().eq("id", item.id);
     setItems(items.filter((_, idx) => idx !== i));
   };
 

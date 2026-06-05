@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { apiClient } from "@/lib/apiClient";
 import { BarChart3, Eye, MousePointerClick, FileDown, Mail, ExternalLink } from "lucide-react";
 
 interface Event {
@@ -36,7 +36,7 @@ const AdminAnalytics = () => {
   useEffect(() => {
     setLoading(true);
     const since = new Date(Date.now() - range * 24 * 60 * 60 * 1000).toISOString();
-    supabase
+    apiClient
       .from("analytics_events")
       .select("*")
       .gte("created_at", since)

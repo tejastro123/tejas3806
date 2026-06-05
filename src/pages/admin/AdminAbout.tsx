@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { apiClient } from "@/lib/apiClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Save, Plus, Trash2 } from "lucide-react";
@@ -20,7 +20,7 @@ const AdminAbout = () => {
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    supabase
+    apiClient
       .from("about")
       .select("*")
       .limit(1)
@@ -34,13 +34,13 @@ const AdminAbout = () => {
     setSaving(true);
     setMsg("");
     if (data.id) {
-      const { error } = await supabase
+      const { error } = await apiClient
         .from("about")
         .update({ heading: data.heading, content: data.content, fun_facts: data.fun_facts, updated_at: new Date().toISOString() })
         .eq("id", data.id);
       setMsg(error ? `❌ ${error.message}` : "✅ Saved!");
     } else {
-      const { data: newRow, error } = await supabase.from("about").insert(data).select().single();
+      const { data: newRow, error } = await apiClient.from("about").insert(data).select().single();
       if (newRow) setData(newRow);
       setMsg(error ? `❌ ${error.message}` : "✅ Created!");
     }

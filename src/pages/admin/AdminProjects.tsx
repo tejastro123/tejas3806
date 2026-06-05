@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { apiClient } from "@/lib/apiClient";
 import { syncReposToSupabase } from "@/lib/githubSync";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,7 +25,7 @@ const AdminProjects = () => {
   const [msg, setMsg] = useState("");
 
   const fetchAll = () => {
-    supabase
+    apiClient
       .from("projects")
       .select("*")
       .order("sort_order")
@@ -41,9 +41,9 @@ const AdminProjects = () => {
     setMsg("");
     for (const item of items) {
       if (item.id) {
-        await supabase.from("projects").update(item).eq("id", item.id);
+        await apiClient.from("projects").update(item).eq("id", item.id);
       } else {
-        const { data } = await supabase.from("projects").insert(item).select().single();
+        const { data } = await apiClient.from("projects").insert(item).select().single();
         if (data) item.id = data.id;
       }
     }
@@ -83,7 +83,7 @@ const AdminProjects = () => {
 
   const removeItem = async (index: number) => {
     const item = items[index];
-    if (item.id) await supabase.from("projects").delete().eq("id", item.id);
+    if (item.id) await apiClient.from("projects").delete().eq("id", item.id);
     setItems(items.filter((_, i) => i !== index));
   };
 

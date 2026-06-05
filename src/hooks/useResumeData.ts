@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { apiClient } from "@/lib/apiClient";
 
 export interface ResumeData {
   personalInfo: any;
@@ -22,10 +22,10 @@ export const useResumeData = () => {
         { data: projects },
         { data: skills }
       ] = await Promise.all([
-        supabase.from("personal_info").select("*").single(),
-        supabase.from("experience").select("*").order("sort_order", { ascending: true }),
-        supabase.from("projects").select("*").order("sort_order", { ascending: true }),
-        supabase.from("skills").select("*").order("sort_order", { ascending: true })
+        apiClient.from("personal_info").select("*").single(),
+        apiClient.from("experience").select("*").order("sort_order", { ascending: true }),
+        apiClient.from("projects").select("*").order("sort_order", { ascending: true }),
+        apiClient.from("skills").select("*").order("sort_order", { ascending: true })
       ]);
 
       setData({

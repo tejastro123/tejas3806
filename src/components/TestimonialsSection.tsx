@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Quote, MessageSquarePlus, Send, Loader2, CheckCircle2 } from "lucide-react";
-import { supabase } from "@/lib/supabaseClient";
+import { apiClient } from "@/lib/apiClient";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -46,7 +46,7 @@ const TestimonialsSection = () => {
 
   const fetchTestimonials = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await apiClient
         .from("testimonials")
         .select("*")
         .eq("is_approved", true)
@@ -113,7 +113,7 @@ const TestimonialsSection = () => {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase
+      const { error } = await apiClient
         .from("testimonials")
         .insert([{
           name,

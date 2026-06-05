@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
-import { seedDatabase } from "@/lib/seedDatabase";
+import { apiClient } from "@/lib/apiClient";
 import { Button } from "@/components/ui/button";
 import { FolderGit2, PenTool, MessageSquare, Briefcase, Wrench, Zap, Database, LucideIcon } from "lucide-react";
 
@@ -26,7 +25,7 @@ const AdminDashboard = () => {
   const fetchCounts = async () => {
     const updated = await Promise.all(
       cards.map(async (card) => {
-        const { count } = await supabase
+        const { count } = await apiClient
           .from(card.table)
           .select("*", { count: "exact", head: true });
         return { ...card, count: count || 0 };
@@ -43,8 +42,10 @@ const AdminDashboard = () => {
     setSeeding(true);
     setSeedResults([]);
     try {
-      const results = await seedDatabase();
-      setSeedResults(results);
+      const response = await fetch("/api/seed");
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Failed to seed");
+      setSeedResults(["✅ Database seeded successfully!", data.message]);
       fetchCounts(); // Refresh counts after seeding
     } catch (err: any) {
       setSeedResults([`❌ Error: ${err.message}`]);

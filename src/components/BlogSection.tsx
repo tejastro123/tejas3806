@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { supabase } from "@/lib/supabaseClient";
+import { apiClient } from "@/lib/apiClient";
 import { blogPosts as fallbackPosts } from "@/data";
 import { useTranslation } from "react-i18next";
 import { trackEvent } from "@/lib/analytics";
@@ -26,7 +26,7 @@ const BlogSection = () => {
   const [posts, setPosts] = useState<DBPost[] | null>(null);
 
   useEffect(() => {
-    supabase
+    apiClient
       .from("blog_posts")
       .select("*")
       .eq("published", true)

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { apiClient } from "@/lib/apiClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Save, Plus, Trash2, Eye, EyeOff } from "lucide-react";
@@ -44,7 +44,7 @@ const AdminBlog = () => {
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    supabase
+    apiClient
       .from("blog_posts")
       .select("*")
       .order("created_at", { ascending: false })
@@ -65,11 +65,11 @@ const AdminBlog = () => {
     setMsg("");
     const payload = { ...item, updated_at: new Date().toISOString() };
     if (item.id) {
-      const { error } = await supabase.from("blog_posts").update(payload).eq("id", item.id);
+      const { error } = await apiClient.from("blog_posts").update(payload).eq("id", item.id);
       if (error) setMsg(`❌ ${error.message}`);
       else setMsg("✅ Saved");
     } else {
-      const { data, error } = await supabase
+      const { data, error } = await apiClient
         .from("blog_posts")
         .insert(payload)
         .select()
@@ -94,7 +94,7 @@ const AdminBlog = () => {
   const removeItem = async (i: number) => {
     if (!confirm("Delete this post?")) return;
     const item = items[i];
-    if (item.id) await supabase.from("blog_posts").delete().eq("id", item.id);
+    if (item.id) await apiClient.from("blog_posts").delete().eq("id", item.id);
     setItems(items.filter((_, idx) => idx !== i));
     if (activeIdx === i) setActiveIdx(null);
   };
@@ -116,7 +116,7 @@ const AdminBlog = () => {
       return;
     }
     const newPublished = !item.published;
-    const { error } = await supabase
+    const { error } = await apiClient
       .from("blog_posts")
       .update({ published: newPublished, updated_at: new Date().toISOString() })
       .eq("id", item.id);

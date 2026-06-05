@@ -114,7 +114,7 @@ const HeroSection = () => {
                 alt={personalInfo.name}
                 width={160}
                 height={160}
-                fetchPriority="high"
+                {...{ fetchpriority: "high" } as any}
                 decoding="async"
                 className="w-full h-full rounded-full object-cover"
               />

@@ -4,7 +4,7 @@ import { Mail, MapPin, Send, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { personalInfo, socialLinks } from "@/data";
-import { supabase } from "@/lib/supabaseClient";
+import { apiClient } from "@/lib/apiClient";
 import { useTranslation } from "react-i18next";
 import { trackEvent } from "@/lib/analytics";
 
@@ -45,7 +45,7 @@ const ContactSection = () => {
 
     try {
       // 1) Persist to DB (admin inbox)
-      const { error: dbError } = await supabase
+      const { error: dbError } = await apiClient
         .from("messages")
         .insert([
           {
@@ -57,7 +57,7 @@ const ContactSection = () => {
       if (dbError) throw dbError;
 
       // 2) Trigger email delivery via edge function (best-effort)
-      const { error: fnError } = await supabase.functions.invoke("send-contact-email", {
+      const { error: fnError } = await apiClient.functions.invoke("send-contact-email", {
         body: {
           name: formData.name.trim(),
           email: formData.email.trim(),
