@@ -139,7 +139,7 @@ const ContactSection = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => trackEvent("social_click", label)}
-                  className="w-12 h-12 rounded-xl glass neon-border flex items-center justify-center text-muted-foreground hover:text-neon-cyan hover:neon-glow transition-all"
+                  className="w-12 h-12 rounded-none glass neon-border flex items-center justify-center text-muted-foreground hover:text-neon-cyan hover:neon-glow transition-all"
                   aria-label={label}
                 >
                   <Icon size={20} />
