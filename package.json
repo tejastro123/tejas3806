@@ -6,7 +6,7 @@
   "scripts": {
     "predev": "npx tsx scripts/generate-sitemap.ts",
     "dev": "vite",
-    "server": "tsx watch server/src/index.ts",
+    "server": "concurrently --kill-others --prefix \"[{name}]\" --names \"gateway,auth,portfolio,blog,ai,analytics,notification\" --prefix-colors \"cyan,blue,green,magenta,yellow,red,white\" \"tsx watch backend/api-gateway/index.ts\" \"tsx watch backend/services/auth-service/index.ts\" \"tsx watch backend/services/portfolio-service/index.ts\" \"tsx watch backend/services/blog-service/index.ts\" \"tsx watch backend/services/ai-service/index.ts\" \"tsx watch backend/services/analytics-service/index.ts\" \"tsx watch backend/services/notification-service/index.ts\"",
     "dev:all": "concurrently \"npm run dev\" \"npm run server\"",
     "prebuild": "npx tsx scripts/generate-sitemap.ts",
     "build": "vite build",
