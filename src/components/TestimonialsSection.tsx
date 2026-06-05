@@ -65,19 +65,62 @@ const TestimonialsSection = () => {
     fetchTestimonials();
   }, []);
 
+  const isAllowedAvatarUrl = (url: string): boolean => {
+    if (!url) return true; // empty allowed
+    try {
+      const u = new URL(url);
+      if (u.protocol !== "https:") return false;
+      const ALLOWED_HOSTS = [
+        "github.com",
+        "avatars.githubusercontent.com",
+        "gravatar.com",
+        "www.gravatar.com",
+        "secure.gravatar.com",
+        "lh3.googleusercontent.com",
+        "media.licdn.com",
+      ];
+      return ALLOWED_HOSTS.includes(u.hostname);
+    } catch {
+      return false;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const name = formData.name.trim();
+    const content = formData.content.trim();
+    const avatar = formData.avatar_url.trim();
+
+    if (name.length > 100 || content.length > 1000) {
+      toast({
+        title: "Too long",
+        description: "Please shorten your input and try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (avatar && !isAllowedAvatarUrl(avatar)) {
+      toast({
+        title: "Avatar URL not allowed",
+        description:
+          "Avatar must be an HTTPS link from GitHub, Gravatar, Google, or LinkedIn. Leave it blank to skip.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       const { error } = await supabase
         .from("testimonials")
         .insert([{
-          name: formData.name,
-          role: formData.role,
-          company: formData.company,
-          content: formData.content,
-          avatar_url: formData.avatar_url,
+          name,
+          role: formData.role.trim() || null,
+          company: formData.company.trim() || null,
+          content,
+          avatar_url: avatar || null,
           is_approved: false
         }]);
 

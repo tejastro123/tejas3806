@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
@@ -15,10 +16,15 @@ import CustomCursor from "@/components/CustomCursor";
 import Terminal from "@/components/Terminal";
 import { Terminal as TerminalIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { trackEvent } from "@/lib/analytics";
 
 const Index = () => {
   const glowRef = useRef<HTMLDivElement>(null);
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
+
+  useEffect(() => {
+    trackEvent("page_view", "home");
+  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -48,6 +54,9 @@ const Index = () => {
 
   return (
     <div className="relative min-h-screen bg-background overflow-hidden selection:bg-neon-cyan/30 selection:text-white">
+      <Helmet>
+        <link rel="canonical" href="https://tejas3806.lovable.app/" />
+      </Helmet>
       {/* Custom Cursor */}
       <CustomCursor />
 

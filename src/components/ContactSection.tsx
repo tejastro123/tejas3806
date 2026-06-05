@@ -6,6 +6,25 @@ import { Input } from "@/components/ui/input";
 import { personalInfo, socialLinks } from "@/data";
 import { supabase } from "@/lib/supabaseClient";
 import { useTranslation } from "react-i18next";
+import { trackEvent } from "@/lib/analytics";
+
+const NAME_MAX = 100;
+const EMAIL_MAX = 200;
+const MESSAGE_MAX = 5000;
+
+const validate = (d: { name: string; email: string; message: string }) => {
+  const name = d.name.trim();
+  const email = d.email.trim();
+  const message = d.message.trim();
+  if (!name) return "Please enter your name.";
+  if (name.length > NAME_MAX) return `Name must be ${NAME_MAX} characters or less.`;
+  if (!email) return "Please enter your email.";
+  if (email.length > EMAIL_MAX) return "Email is too long.";
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return "Please enter a valid email.";
+  if (!message) return "Please enter a message.";
+  if (message.length > MESSAGE_MAX) return `Message must be ${MESSAGE_MAX} characters or less.`;
+  return null;
+};
 
 const ContactSection = () => {
   const { t } = useTranslation();
@@ -16,29 +35,47 @@ const ContactSection = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSending(true);
+    const validationError = validate(formData);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
     setError(null);
+    setIsSending(true);
 
     try {
-      const { error: submitError } = await supabase
+      // 1) Persist to DB (admin inbox)
+      const { error: dbError } = await supabase
         .from("messages")
         .insert([
           {
-            name: formData.name,
-            email: formData.email,
-            message: formData.message,
+            name: formData.name.trim(),
+            email: formData.email.trim(),
+            message: formData.message.trim(),
           },
         ]);
+      if (dbError) throw dbError;
 
-      if (submitError) throw submitError;
+      // 2) Trigger email delivery via edge function (best-effort)
+      const { error: fnError } = await supabase.functions.invoke("send-contact-email", {
+        body: {
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          message: formData.message.trim(),
+        },
+      });
+      if (fnError) console.warn("Email function error (message still saved):", fnError);
+
+      trackEvent("contact_submit");
 
       setIsSent(true);
       setFormData({ name: "", email: "", message: "" });
-      // Reset success message after 5 seconds
       setTimeout(() => setIsSent(false), 5000);
-    } catch (err: unknown) {
+    } catch (err) {
       console.error("Error sending message:", err);
-      setError("Failed to send message. Please try again or use the email link below.");
+      setError(
+        "Failed to send your message. Please try again, or email me directly via the link.",
+      );
     } finally {
       setIsSending(false);
     }
@@ -94,7 +131,6 @@ const ContactSection = () => {
               </div>
             </div>
 
-            {/* Social links */}
             <div className="flex gap-3 pt-4">
               {socialLinks.map(({ icon: Icon, href, label }) => (
                 <a
@@ -102,7 +138,8 @@ const ContactSection = () => {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-12 h-12 rounded-xl glass neon-border flex items-center justify-center text-muted-foreground hover:text-neon-cyan hover:neon-glow transition-all"
+                  onClick={() => trackEvent("social_click", label)}
+                  className="w-12 h-12 rounded-none glass neon-border flex items-center justify-center text-muted-foreground hover:text-neon-cyan hover:neon-glow transition-all"
                   aria-label={label}
                 >
                   <Icon size={20} />
@@ -124,16 +161,12 @@ const ContactSection = () => {
                 </div>
                 <h3 className="text-2xl font-bold gradient-text">{t("contact.success_title")}</h3>
                 <p className="text-muted-foreground font-mono text-sm uppercase tracking-tighter">{t("contact.success_desc")}</p>
-                <Button
-                  variant="outline"
-                  className="mt-6 neon-border"
-                  onClick={() => setIsSent(false)}
-                >
+                <Button variant="outline" className="mt-6 neon-border" onClick={() => setIsSent(false)}>
                   {t("contact.send_another")}
                 </Button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="glass neon-border rounded-2xl p-6 space-y-4 relative overflow-hidden">
+              <form onSubmit={handleSubmit} className="glass neon-border rounded-2xl p-6 space-y-4 relative overflow-hidden" noValidate>
                 {isSending && (
                   <div className="absolute inset-0 bg-background/50 backdrop-blur-sm z-20 flex items-center justify-center">
                     <div className="w-12 h-12 border-4 border-neon-cyan/20 border-t-neon-cyan rounded-full animate-spin" />
@@ -147,6 +180,7 @@ const ContactSection = () => {
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     placeholder="Your name"
                     className="bg-muted/30 border-border/50 focus:border-neon-cyan/50"
+                    maxLength={NAME_MAX}
                     required
                     disabled={isSending}
                   />
@@ -159,17 +193,24 @@ const ContactSection = () => {
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="you@example.com"
                     className="bg-muted/30 border-border/50 focus:border-neon-cyan/50"
+                    maxLength={EMAIL_MAX}
                     required
                     disabled={isSending}
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-1 block">{t("contact.message_label")}</label>
+                  <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-1 block">
+                    {t("contact.message_label")}
+                    <span className="ml-2 text-muted-foreground/60 normal-case">
+                      {formData.message.length}/{MESSAGE_MAX}
+                    </span>
+                  </label>
                   <textarea
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     placeholder="Tell me about your project..."
                     rows={4}
+                    maxLength={MESSAGE_MAX}
                     className="w-full rounded-md border bg-muted/30 border-border/50 focus:border-neon-cyan/50 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-neon-cyan/50"
                     required
                     disabled={isSending}
@@ -177,7 +218,7 @@ const ContactSection = () => {
                 </div>
 
                 {error && (
-                  <p className="text-xs text-destructive font-mono animate-pulse">{error}</p>
+                  <p className="text-xs text-destructive font-mono">{error}</p>
                 )}
 
                 <Button type="submit" className="w-full gap-2 neon-glow hover:shadow-neon-lg transition-all" disabled={isSending}>
@@ -193,4 +234,3 @@ const ContactSection = () => {
 };
 
 export default ContactSection;
-

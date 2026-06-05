@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { useAuth } from "@/context/AuthContext";
 import { motion } from "framer-motion";
 import { Lock, Mail, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
@@ -30,9 +32,11 @@ const AdminLogin = () => {
     setError("");
     setLoading(true);
 
-    const { error } = await signIn(email, password);
-    if (error) {
-      setError(error.message);
+    const { error: signInError } = await signIn(email, password);
+    if (signInError) {
+      // Generic message to avoid leaking whether the account exists
+      console.warn("Sign-in failed:", signInError.message);
+      setError("Invalid email or password. Please try again.");
       setLoading(false);
     } else {
       navigate("/admin", { replace: true });
@@ -40,7 +44,17 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-6">
+    <>
+      <Helmet>
+        <title>Admin Login — Tejas Mellimpudi</title>
+        <meta name="description" content="Secure admin sign-in for the Tejas Mellimpudi portfolio CMS. Authorized users only." />
+        <meta name="robots" content="noindex, nofollow" />
+        <link rel="canonical" href="https://tejas3806.lovable.app/admin/login" />
+        <meta property="og:title" content="Admin Login — Tejas Mellimpudi" />
+        <meta property="og:description" content="Secure admin sign-in for the Tejas Mellimpudi portfolio CMS." />
+        <meta property="og:url" content="https://tejas3806.lovable.app/admin/login" />
+      </Helmet>
+      <div className="min-h-screen flex items-center justify-center bg-background p-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -114,7 +128,8 @@ const AdminLogin = () => {
           </a>
         </p>
       </motion.div>
-    </div>
+      </div>
+    </>
   );
 };
 

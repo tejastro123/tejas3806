@@ -18,7 +18,8 @@ import {
   Home,
   LayoutDashboard,
   Inbox,
-  Settings
+  Settings,
+  BarChart3
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -33,6 +34,7 @@ const navItems = [
   { to: "/admin/blog", icon: PenTool, label: "Blog" },
   { to: "/admin/testimonials", icon: MessageSquareQuote, label: "Testimonials" },
   { to: "/admin/messages", icon: Inbox, label: "Messages" },
+  { to: "/admin/analytics", icon: BarChart3, label: "Analytics" },
 ];
 
 
