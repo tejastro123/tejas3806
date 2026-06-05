@@ -194,7 +194,7 @@ const HeroSection = () => {
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 rounded-full glass neon-border hover:neon-glow transition-all hover:scale-110 text-foreground/60 hover:text-neon-cyan"
+                className="p-3 glass neon-border hover:neon-glow transition-all hover:scale-110 text-foreground/60 hover:text-neon-cyan rounded-none"
                 aria-label={label}
               >
                 <Icon size={20} />
