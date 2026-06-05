@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
+import cookieParser from "cookie-parser";
+import helmet from "helmet";
 import { connectDB } from "../../shared/db";
 import { requireAdmin } from "../../shared/middleware/auth";
 
@@ -18,15 +20,32 @@ import { BlogPost } from "../../shared/models/BlogPost";
 import { Testimonial } from "../../shared/models/Testimonial";
 import { Message } from "../../shared/models/Message";
 
+import { searchEngine, SearchDocument } from "../../shared/searchEngine";
+import { traceMiddleware } from "../../shared/middleware/trace";
+import { bootstrapObservability } from "../../shared/observability";
+
 dotenv.config();
 
 const app = express();
 const PORT = 5002;
 
-app.use(cors());
+app.use(helmet());
+app.use(cookieParser());
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
 app.use(express.json());
 
-connectDB("Portfolio-Service");
+// Apply global request-scoped tracing middleware
+app.use(traceMiddleware);
+
+// Bootstrap Observability health check and system performance metrics
+bootstrapObservability(app, "Portfolio Service");
+
+connectDB("Portfolio-Service").then(() => {
+  setTimeout(reindexSearchData, 6000);
+});
 
 // Personal Info
 app.get("/api/personal-info", async (req, res) => {
@@ -372,7 +391,7 @@ app.get("/api/seed", async (req, res) => {
       const hashedPassword = await bcrypt.hash("adminpassword", salt);
       await new User({ email: "admin@example.com", password: hashedPassword, role: "admin" }).save();
     }
-    
+
     // Seed personal info
     const personalCount = await PersonalInfo.countDocuments();
     if (personalCount === 0) {
@@ -472,4 +491,101 @@ app.get("/api/seed", async (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`[Portfolio Service] Running on port ${PORT}`);
+});
+
+// Search Engine Reindexing and API Endpoints
+async function reindexSearchData() {
+  try {
+    console.log("[Portfolio Service] Ingesting documents into Search Engine...");
+    await searchEngine.clear();
+
+    const documents: SearchDocument[] = [];
+
+    // 1. Projects
+    const projects = await Project.find();
+    for (const p of projects) {
+      documents.push({
+        id: `proj_${p._id}`,
+        title: p.title,
+        content: p.description,
+        type: "project",
+        url: "/#projects",
+      });
+    }
+
+    // 2. Experiences
+    const experiences = await Experience.find();
+    for (const e of experiences) {
+      documents.push({
+        id: `exp_${e._id}`,
+        title: e.title,
+        content: `${e.org} - ${e.description}`,
+        type: "experience",
+        url: "/#about",
+      });
+    }
+
+    // 3. Blog Posts (only published)
+    const blogs = await BlogPost.find({ published: true });
+    for (const b of blogs) {
+      documents.push({
+        id: `blog_${b._id}`,
+        title: b.title,
+        content: `${b.excerpt || ""} ${b.content || ""}`.replace(/<[^>]*>/g, ""), // strip HTML
+        type: "blog",
+        url: `/blog/${b.slug}`,
+      });
+    }
+
+    // 4. Skills
+    const skills = await Skill.find();
+    for (const s of skills) {
+      documents.push({
+        id: `skill_${s._id}`,
+        title: s.title,
+        content: s.items.map((item) => item.name).join(", "),
+        type: "skill",
+        url: "/#skills",
+      });
+    }
+
+    await searchEngine.indexDocuments(documents);
+    console.log(`[Portfolio Service] Search reindexing complete. Indexed ${documents.length} entries.`);
+  } catch (err: any) {
+    console.error("[Portfolio Service] Search reindexing failed:", err.message);
+  }
+}
+
+// Global Search API
+app.get("/api/search", async (req, res) => {
+  try {
+    const q = req.query.q as string;
+    if (!q) {
+      return res.json([]);
+    }
+    const results = await searchEngine.search(q, { limit: 10 });
+    return res.json(results);
+  } catch (error) {
+    return res.status(500).json({ error: (error as Error).message });
+  }
+});
+
+// Re-index Search
+app.post("/api/search/reindex", requireAdmin, async (req, res) => {
+  try {
+    await reindexSearchData();
+    return res.json({ success: true, message: "Search index rebuilt successfully." });
+  } catch (error) {
+    return res.status(500).json({ error: (error as Error).message });
+  }
+});
+
+// Internal endpoint to trigger search reindexing
+app.post("/api/internal/search-reindex", async (req, res) => {
+  try {
+    await reindexSearchData();
+    return res.json({ success: true });
+  } catch (error) {
+    return res.status(500).json({ error: (error as Error).message });
+  }
 });

@@ -1,16 +1,29 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Terminal, Sun, Moon } from "lucide-react";
+import { Menu, X, Terminal, Sun, Moon, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { personalInfo } from "@/data";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useTheme } from "@/shared/hooks/useTheme";
+import { SearchDialog } from "./SearchDialog";
 
 const Navbar = () => {
   const { t } = useTranslation();
   const { theme, toggle } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setSearchOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const navItems = [
     { label: t("nav.about"), href: "#about" },
@@ -61,6 +74,15 @@ const Navbar = () => {
           </div>
           <div className="h-6 w-px bg-border/50 mx-2" />
           <button
+            onClick={() => setSearchOpen(true)}
+            className="p-2 rounded-lg glass neon-border text-foreground/70 hover:text-neon-cyan transition-all flex items-center gap-1.5"
+            aria-label="Search"
+            title="Search (Ctrl + K)"
+          >
+            <Search size={16} />
+            <span className="text-[10px] text-muted-foreground/60 hidden lg:inline font-mono bg-background/50 px-1 py-0.5 rounded border border-border/50">Ctrl K</span>
+          </button>
+          <button
             onClick={toggle}
             className="p-2 rounded-lg glass neon-border text-foreground/70 hover:text-neon-cyan transition-all"
             aria-label="Toggle theme"
@@ -73,6 +95,13 @@ const Navbar = () => {
 
         {/* Mobile toggle */}
         <div className="flex items-center gap-2 md:hidden">
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="p-2 rounded-lg glass neon-border text-foreground/70"
+            aria-label="Search"
+          >
+            <Search size={18} />
+          </button>
           <button
             onClick={toggle}
             className="p-2 rounded-lg glass neon-border text-foreground/70"
@@ -116,6 +145,7 @@ const Navbar = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      <SearchDialog isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </motion.nav>
   );
 };

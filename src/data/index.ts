@@ -146,7 +146,7 @@ export const projects = [
     demo: "https://livemart-main.vercel.app",
     github: "https://github.com/tejastro123/LIVEMART",
     featured: true,
-    image: "https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?auto=format&fit=crop&q=80&w=1000",
+    image: "https://images.unsplash.com/photo-1557821552-17105176677c?auto=format&fit=crop&q=80&w=1000",
   },
   {
     title: "WebRTC Communication",
@@ -156,7 +156,7 @@ export const projects = [
     demo: "https://webrtc-eight-olive.vercel.app",
     github: "https://github.com/tejastro123/webrtc",
     featured: true,
-    image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=1000",
+    image: "https://images.unsplash.com/photo-1616469829581-73993eb86b02?auto=format&fit=crop&q=80&w=1000",
   },
   {
     title: "Agentic-AI-Lynq",

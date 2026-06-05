@@ -3,7 +3,7 @@ import { Schema, model } from "mongoose";
 const userSchema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  role: { type: String, enum: ["admin", "user"], default: "admin" },
+  role: { type: String, enum: ["admin", "editor", "author", "visitor", "user"], default: "visitor" },
   createdAt: { type: Date, default: Date.now },
 });
 

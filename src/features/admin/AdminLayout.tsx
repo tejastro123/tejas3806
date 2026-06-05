@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAuth } from "@/services/auth/AuthContext";
 import { syncReposToSupabase } from "@/services/api/githubSync";
+import { useSocket } from "@/app/providers/SocketProvider";
 import {
   User,
   FileText,
@@ -12,14 +13,15 @@ import {
   PenTool,
   MessageSquareQuote,
   LogOut,
-  Github,
   Menu,
   X,
   Home,
   LayoutDashboard,
   Inbox,
   Settings,
-  BarChart3
+  BarChart3,
+  Github,
+  Activity
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 
@@ -35,12 +37,14 @@ const navItems = [
   { to: "/admin/testimonials", icon: MessageSquareQuote, label: "Testimonials" },
   { to: "/admin/messages", icon: Inbox, label: "Messages" },
   { to: "/admin/analytics", icon: BarChart3, label: "Analytics" },
+  { to: "/admin/observability", icon: Activity, label: "Observability" },
 ];
 
 
 const AdminLayout = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const { visitorCount, typingUsers } = useSocket();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [syncMsg, setSyncMsg] = useState("");
@@ -138,18 +142,31 @@ const AdminLayout = () => {
       {/* Main content */}
       <div className="flex-1 flex flex-col min-h-screen">
         {/* Top bar */}
-        <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-sm border-b border-border px-4 py-3 flex items-center gap-4">
-          <button className="lg:hidden" onClick={() => setSidebarOpen(true)}>
-            <Menu size={20} />
-          </button>
-          <div className="flex-1">
-            {syncMsg && (
-              <span className="text-sm font-medium">{syncMsg}</span>
-            )}
+        <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-sm border-b border-border px-4 py-3 flex items-center gap-4 justify-between">
+          <div className="flex items-center gap-4 flex-1">
+            <button className="lg:hidden" onClick={() => setSidebarOpen(true)}>
+              <Menu size={20} />
+            </button>
+            <div className="flex-1 flex items-center gap-4">
+              {syncMsg && (
+                <span className="text-sm font-medium">{syncMsg}</span>
+              )}
+              {Object.keys(typingUsers).length > 0 && (
+                <span className="text-xs text-neon-cyan animate-pulse font-mono">
+                  💬 {Object.values(typingUsers).join(", ")} typing...
+                </span>
+              )}
+            </div>
           </div>
-          <span className="text-xs text-muted-foreground hidden sm:block">
-            {user?.email}
-          </span>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>{visitorCount} online</span>
+            </div>
+            <span className="text-xs text-muted-foreground hidden sm:block">
+              {user?.email}
+            </span>
+          </div>
         </header>
 
         {/* Page content */}

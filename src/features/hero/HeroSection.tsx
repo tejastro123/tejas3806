@@ -6,10 +6,13 @@ import { useTextScramble } from "@/shared/hooks/useTextScramble";
 import { Magnetic } from "@/shared/components/Magnetic";
 import { useTranslation } from "react-i18next";
 import { ResumeDownloadButton } from "@/features/about/ResumeDownloadButton";
-import { useEffect } from "react";
+import { ResumeAnalyzerModal } from "@/features/about/ResumeAnalyzerModal";
+import { useEffect, useState } from "react";
+import { Sparkles } from "lucide-react";
 
 const HeroSection = () => {
   const { t } = useTranslation();
+  const [showResumeModal, setShowResumeModal] = useState(false);
   const { displayText: nameText, scramble: scrambleName } = useTextScramble(personalInfo.name);
   const { displayText: roleText, scramble: scrambleRole } = useTextScramble(t("hero.role"));
 
@@ -180,7 +183,21 @@ const HeroSection = () => {
           </Magnetic>
 
           <ResumeDownloadButton />
+
+          <Magnetic>
+            <Button
+              variant="outline"
+              size="lg"
+              className="rounded-full gap-2 neon-border hover:neon-glow hover:text-neon-pink transition-all"
+              onClick={() => setShowResumeModal(true)}
+            >
+              <Sparkles size={18} />
+              AI Resume Match
+            </Button>
+          </Magnetic>
         </motion.div>
+
+        <ResumeAnalyzerModal isOpen={showResumeModal} onClose={() => setShowResumeModal(false)} />
 
         <motion.div
           initial={{ opacity: 0 }}

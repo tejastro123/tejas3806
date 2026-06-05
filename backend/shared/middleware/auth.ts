@@ -14,13 +14,21 @@ export const requireAuth = (
   res: Response,
   next: NextFunction
 ): void => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  // 1. Try to read from HttpOnly cookie
+  let token = req.cookies?.accessToken;
+
+  // 2. Fallback to Authorization header
+  if (!token) {
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      token = authHeader.split(" ")[1];
+    }
+  }
+
+  if (!token) {
     res.status(401).json({ error: "Access denied. No token provided." });
     return;
   }
-
-  const token = authHeader.split(" ")[1];
 
   try {
     const jwtSecret = process.env.JWT_SECRET || "default_jwt_secret";
@@ -36,16 +44,16 @@ export const requireAuth = (
   }
 };
 
-export const requireAdmin = (
-  req: AuthenticatedRequest,
-  res: Response,
-  next: NextFunction
-): void => {
-  requireAuth(req, res, () => {
-    if (req.user?.role !== "admin") {
-      res.status(403).json({ error: "Access forbidden. Admin role required." });
-      return;
-    }
-    next();
-  });
+export const requireRole = (allowedRoles: string[]) => {
+  return (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
+    requireAuth(req, res, () => {
+      if (!req.user || !allowedRoles.includes(req.user.role)) {
+        res.status(403).json({ error: `Access forbidden. Allowed roles: ${allowedRoles.join(", ")}` });
+        return;
+      }
+      next();
+    });
+  };
 };
+
+export const requireAdmin = requireRole(["admin"]);

@@ -35,9 +35,9 @@ const Terminal: React.FC<TerminalProps> = ({ isOpen, onClose }) => {
     }
   }, [history]);
 
-  const handleCommand = (cmd: string) => {
-    const trimmedCmd = cmd.trim().toLowerCase();
-    const args = trimmedCmd.split(" ");
+  const handleCommand = async (cmd: string) => {
+    const trimmedCmd = cmd.trim();
+    const args = trimmedCmd.toLowerCase().split(" ");
     const command = args[0];
 
     setHistory((prev) => [...prev, { type: "command", text: `guest@portfolio:~$ ${cmd}` }]);
@@ -51,6 +51,7 @@ const Terminal: React.FC<TerminalProps> = ({ isOpen, onClose }) => {
             text: (
               <div className="grid grid-cols-2 gap-2 mt-1 mb-2">
                 <div><span className="text-neon-cyan">help</span> - Show this menu</div>
+                <div><span className="text-neon-cyan">agent [type] [q]</span> - Run career|research|coding|collab agent</div>
                 <div><span className="text-neon-cyan">ls</span> - List site sections</div>
                 <div><span className="text-neon-cyan">cd [section]</span> - Jump to section</div>
                 <div><span className="text-neon-cyan">whoami</span> - Display profile info</div>
@@ -140,11 +141,120 @@ const Terminal: React.FC<TerminalProps> = ({ isOpen, onClose }) => {
         }
         break;
 
+      case "agent": {
+        const agentType = args[1];
+        const queryText = args.slice(2).join(" ");
+        if (!agentType || !queryText) {
+          setHistory((prev) => [
+            ...prev,
+            { type: "error", text: "Usage: agent [career|research|coding|collab] [query]" }
+          ]);
+          break;
+        }
+
+        if (agentType === "collab" || agentType === "collaborate") {
+          setHistory((prev) => [
+            ...prev,
+            { type: "info", text: "⚙️ INITIALISING MULTI-AGENT COLLABORATION DEBATE CONTEXT..." },
+            { type: "info", text: "🔬 CONSULTING SCIENTIFIC RESEARCH AGENT..." }
+          ]);
+          try {
+            const res = await fetch("/api/ai/agent-rpc", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                jsonrpc: "2.0",
+                method: "agent_collaborate",
+                params: { query: queryText },
+                id: Date.now()
+              })
+            });
+            const data = await res.json();
+            if (data.result) {
+              const { researchAgent, codingAgent, careerAgent } = data.result.agents;
+              setHistory((prev) => [
+                ...prev,
+                { type: "info", text: "=== RESEARCH AGENT ANALYSIS ===" },
+                { type: "output", text: researchAgent },
+                { type: "info", text: "💻 DISPATCHING TO CODEBASE ARCHITECT AGENT..." },
+                { type: "output", text: codingAgent },
+                { type: "info", text: "💼 CONVENING CAREER AGENT FOR SYNTHESIZED DECISION..." },
+                { type: "info", text: "=== FINAL COLLABORATION REPORT ===" },
+                { type: "output", text: data.result.synthesis }
+              ]);
+            } else {
+              setHistory((prev) => [...prev, { type: "error", text: "Collaboration query failed." }]);
+            }
+          } catch (err: any) {
+            setHistory((prev) => [...prev, { type: "error", text: `Error: Unable to connect to multi-agent orchestrator (${err.message})` }]);
+          }
+        } else {
+          let method = "query_career";
+          let agentName = "CAREER AGENT";
+          if (agentType === "research") {
+            method = "query_research";
+            agentName = "RESEARCH AGENT";
+          } else if (agentType === "coding") {
+            method = "query_coding";
+            agentName = "CODING AGENT";
+          } else if (agentType !== "career") {
+            setHistory((prev) => [...prev, { type: "error", text: `Unknown agent: ${agentType}. Available agents: career, research, coding, collab` }]);
+            break;
+          }
+
+          setHistory((prev) => [...prev, { type: "info", text: `📶 ESTABLISHING CONTACT WITH ${agentName}...` }]);
+          try {
+            const res = await fetch("/api/ai/agent-rpc", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                jsonrpc: "2.0",
+                method,
+                params: { query: queryText },
+                id: Date.now()
+              })
+            });
+            const data = await res.json();
+            if (data.result) {
+              setHistory((prev) => [
+                ...prev,
+                { type: "info", text: `=== ${agentName} RESPONSE ===` },
+                { type: "output", text: data.result.response }
+              ]);
+            } else {
+              setHistory((prev) => [...prev, { type: "error", text: `Query to ${agentName} failed.` }]);
+            }
+          } catch (err: any) {
+            setHistory((prev) => [...prev, { type: "error", text: `Error: Unable to connect to ${agentName} (${err.message})` }]);
+          }
+        }
+        break;
+      }
+
       case "":
         break;
 
-      default:
-        setHistory((prev) => [...prev, { type: "error", text: `command not found: ${command}` }]);
+      default: {
+        setHistory((prev) => [...prev, { type: "info", text: "QUERYING CO-PILOT AGENT..." }]);
+        try {
+          const response = await fetch("/api/ai/chat", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ message: cmd })
+          });
+          const data = await response.json();
+          if (data.response) {
+            setHistory((prev) => [...prev, { type: "output", text: data.response }]);
+          } else {
+            setHistory((prev) => [...prev, { type: "error", text: "Error: No response from co-pilot." }]);
+          }
+        } catch (err) {
+          setHistory((prev) => [...prev, { type: "error", text: `Error: Unable to connect to co-pilot. (${(err as Error).message})` }]);
+        }
+        break;
+      }
     }
   };
 

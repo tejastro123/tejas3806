@@ -108,7 +108,7 @@ const ProjectsSection = () => {
                 transition={{ duration: 0.4, type: "spring", stiffness: 100 }}
                 className="card-3d"
               >
-                <div className="card-3d-inner rounded-2xl glass neon-border overflow-hidden h-full flex flex-col holo-shine">
+                <div className="card-3d-inner rounded-2xl glass neon-border overflow-hidden h-full flex flex-col holo-shine group">
                   {/* Thumbnail */}
                   <div className="h-48 overflow-hidden relative">
                     {project.image ? (

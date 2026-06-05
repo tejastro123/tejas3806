@@ -8,6 +8,8 @@ import { apiClient } from "@/services/api/apiClient";
 import { useTranslation } from "react-i18next";
 import { trackEvent } from "@/services/api/analytics";
 
+import { useSocket } from "@/app/providers/SocketProvider";
+
 const NAME_MAX = 100;
 const EMAIL_MAX = 200;
 const MESSAGE_MAX = 5000;
@@ -28,10 +30,27 @@ const validate = (d: { name: string; email: string; message: string }) => {
 
 const ContactSection = () => {
   const { t } = useTranslation();
+  const { emitTyping } = useSocket();
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [isSending, setIsSending] = useState(false);
   const [isSent, setIsSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const handleInputChange = (field: string, val: string) => {
+    setFormData((prev) => {
+      const updated = { ...prev, [field]: val };
+      // Broadcast typing state
+      emitTyping(true, updated.name || "A Visitor");
+
+      const timerId = (window as any)._typingTimer;
+      if (timerId) clearTimeout(timerId);
+      (window as any)._typingTimer = setTimeout(() => {
+        emitTyping(false, updated.name || "A Visitor");
+      }, 3000);
+
+      return updated;
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,6 +86,13 @@ const ContactSection = () => {
       if (fnError) console.warn("Email function error (message still saved):", fnError);
 
       trackEvent("contact_submit");
+
+      // Broadcast instant admin notification via socket
+      emitNotification({
+        title: "📬 New Message Received",
+        message: `From: ${formData.name.trim()} (${formData.email.trim()})`,
+        type: "info"
+      });
 
       setIsSent(true);
       setFormData({ name: "", email: "", message: "" });
@@ -173,11 +199,11 @@ const ContactSection = () => {
                   </div>
                 )}
 
-                <div>
+                 <div>
                   <label className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-1 block">{t("common.name")}</label>
                   <Input
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) => handleInputChange("name", e.target.value)}
                     placeholder="Your name"
                     className="bg-muted/30 border-border/50 focus:border-neon-cyan/50"
                     maxLength={NAME_MAX}
@@ -190,7 +216,7 @@ const ContactSection = () => {
                   <Input
                     type="email"
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) => handleInputChange("email", e.target.value)}
                     placeholder="you@example.com"
                     className="bg-muted/30 border-border/50 focus:border-neon-cyan/50"
                     maxLength={EMAIL_MAX}
@@ -207,7 +233,7 @@ const ContactSection = () => {
                   </label>
                   <textarea
                     value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    onChange={(e) => handleInputChange("message", e.target.value)}
                     placeholder="Tell me about your project..."
                     rows={4}
                     maxLength={MESSAGE_MAX}

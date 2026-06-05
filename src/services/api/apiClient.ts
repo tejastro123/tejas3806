@@ -62,6 +62,24 @@ class ApiQueryBuilder {
     }
   }
 
+  async catch(onrejected?: (reason: any) => any) {
+    try {
+      const result = await this.then();
+      return result;
+    } catch (err) {
+      if (onrejected) return onrejected(err);
+      throw err;
+    }
+  }
+
+  async finally(onfinally?: () => void) {
+    try {
+      return await this.then();
+    } finally {
+      if (onfinally) onfinally();
+    }
+  }
+
   private async execute() {
     // Map table names to endpoints
     let endpoint = `/api/${this.tableName.replace("_", "-")}`;
@@ -98,7 +116,10 @@ class ApiQueryBuilder {
     };
 
     if (this.body) {
-      options.body = JSON.stringify(this.body);
+      const payload = (Array.isArray(this.body) && this.body.length === 1)
+        ? this.body[0]
+        : this.body;
+      options.body = JSON.stringify(payload);
     }
 
     try {

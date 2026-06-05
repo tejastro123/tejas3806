@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { apiClient } from "@/services/api/apiClient";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
-import { Save, Plus, Trash2, Eye, EyeOff } from "lucide-react";
+import { Save, Plus, Trash2, Eye, EyeOff, Sparkles, Loader2 } from "lucide-react";
 import { RichTextEditor } from "@/shared/components/RichTextEditor";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/shared/components/ui/dialog";
 
 interface BlogPost {
   id?: string;
@@ -42,6 +43,51 @@ const AdminBlog = () => {
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState("");
+
+  const [showAiModal, setShowAiModal] = useState(false);
+  const [aiTitle, setAiTitle] = useState("");
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [isAiGenerating, setIsAiGenerating] = useState(false);
+
+  const handleAiGenerate = async () => {
+    if (!aiTitle.trim() || !aiPrompt.trim()) return;
+    setIsAiGenerating(true);
+    setMsg("🤖 AI is writing your technical article...");
+    try {
+      const response = await fetch("/api/ai/blog-generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: aiTitle, prompt: aiPrompt })
+      });
+      const data = await response.json();
+      if (data.content) {
+        const newPost: BlogPost = {
+          title: data.title,
+          slug: data.slug,
+          date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+          read_time: data.readTime || "5 min read",
+          excerpt: data.excerpt,
+          link: "#",
+          image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe",
+          content: data.content,
+          published: false
+        };
+        setItems([newPost, ...items]);
+        setActiveIdx(0);
+        setShowAiModal(false);
+        setAiTitle("");
+        setAiPrompt("");
+        setMsg("✅ Article generated! Review below and click Save.");
+      } else {
+        setMsg(`❌ Generation failed: ${data.error || "Unknown Error"}`);
+      }
+    } catch (err) {
+      setMsg(`❌ Error: ${(err as Error).message}`);
+    } finally {
+      setIsAiGenerating(false);
+      setTimeout(() => setMsg(""), 5000);
+    }
+  };
 
   useEffect(() => {
     apiClient
@@ -135,11 +181,16 @@ const AdminBlog = () => {
     <div className="grid lg:grid-cols-[280px_1fr] gap-6">
       {/* Sidebar list */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-1 flex-wrap">
           <h1 className="text-2xl font-bold">Blog</h1>
-          <Button size="sm" onClick={addItem} className="gap-1">
-            <Plus size={14} /> New
-          </Button>
+          <div className="flex gap-1.5">
+            <Button size="sm" variant="outline" onClick={() => setShowAiModal(true)} className="gap-1 px-2 text-neon-pink hover:text-neon-pink/80 border-neon-pink/30">
+              <Sparkles size={13} /> AI
+            </Button>
+            <Button size="sm" onClick={addItem} className="gap-1 px-2.5">
+              <Plus size={14} /> New
+            </Button>
+          </div>
         </div>
         <div className="space-y-1 max-h-[70vh] overflow-auto">
           {items.length === 0 && (
@@ -290,6 +341,60 @@ const AdminBlog = () => {
           </div>
         )}
       </div>
+
+      <Dialog open={showAiModal} onOpenChange={(open) => !open && setShowAiModal(false)}>
+        <DialogContent className="glass-strong border border-neon-cyan/30 text-white max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl font-mono text-neon-cyan">
+              <Sparkles className="text-neon-cyan animate-pulse" size={20} />
+              AI Technical Writer
+            </DialogTitle>
+            <DialogDescription className="text-foreground/60 text-xs">
+              Provide a title and a description prompt, and the AI will generate a complete technical blog post formatted in markdown.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            <div>
+              <label className="text-xs text-muted-foreground font-mono">Article Title</label>
+              <Input
+                value={aiTitle}
+                onChange={(e) => setAiTitle(e.target.value)}
+                placeholder="e.g. Advanced TypeScript Utility Types"
+                className="mt-1 bg-black/40 border border-neon-cyan/20 text-white"
+              />
+            </div>
+            <div>
+              <label className="text-xs text-muted-foreground font-mono">Guidelines / Topics to cover</label>
+              <textarea
+                value={aiPrompt}
+                onChange={(e) => setAiPrompt(e.target.value)}
+                placeholder="e.g. Explain Pick, Omit, Record, and ReturnType with real-world examples."
+                className="w-full h-32 bg-black/40 border border-neon-cyan/20 rounded-md mt-1 p-3 text-sm font-mono text-white outline-none focus:border-neon-cyan/60 transition-all custom-scrollbar resize-none"
+              />
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <Button variant="ghost" onClick={() => setShowAiModal(false)} disabled={isAiGenerating} className="text-foreground/75 hover:bg-white/5">
+                Cancel
+              </Button>
+              <Button
+                onClick={handleAiGenerate}
+                disabled={isAiGenerating || !aiTitle.trim() || !aiPrompt.trim()}
+                className="bg-neon-cyan hover:bg-neon-cyan/80 text-black font-semibold font-mono"
+              >
+                {isAiGenerating ? (
+                  <>
+                    <Loader2 className="animate-spin mr-2" size={16} />
+                    Writing Article...
+                  </>
+                ) : (
+                  "Generate Post"
+                )}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
