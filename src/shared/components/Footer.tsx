@@ -11,7 +11,7 @@ const Footer = () => {
         </div>
         <a
           href="/admin/login"
-          className="text-xs text-muted-foreground/30 hover:text-neon-cyan transition-colors font-mono"
+          className="text-xs text-muted-foreground hover:text-neon-cyan transition-colors font-mono"
         >
           [admin]
         </a>

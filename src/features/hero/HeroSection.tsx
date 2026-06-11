@@ -133,6 +133,7 @@ const HeroSection = () => {
           className="text-5xl md:text-7xl font-bold tracking-tight mb-4 font-display"
         >
           <span className="gradient-text font-mono" onMouseEnter={scrambleName}>{nameText}</span>
+          <span className="sr-only"> — AI/ML/DS Engineer &amp; Physicist Portfolio</span>
         </motion.h1>
 
         <motion.p
