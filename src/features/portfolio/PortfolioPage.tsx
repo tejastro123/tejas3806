@@ -85,6 +85,7 @@ const Index = () => {
           onClick={() => setIsTerminalOpen(true)}
           className="w-14 h-14 rounded-full glass neon-border flex items-center justify-center text-neon-cyan shadow-neon hover:neon-glow transition-all"
           title="Open Terminal (Ctrl+K)"
+          aria-label="Open Terminal"
         >
           <TerminalIcon size={24} />
         </motion.button>
