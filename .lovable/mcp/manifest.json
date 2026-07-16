@@ -1,0 +1,141 @@
+{
+  "version": 1,
+  "sdk_version": "0.22.2",
+  "path": "/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "tejas-portfolio-mcp",
+      "version": "0.1.0",
+      "title": "Tejas Portfolio MCP"
+    },
+    "tools": [
+      {
+        "name": "get_profile",
+        "title": "Get profile",
+        "description": "Return the portfolio owner's public profile: name, role, location, tagline, short bio, long bio, email, website, and avatar URL.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_social_links",
+        "title": "List social links",
+        "description": "Return the portfolio owner's public social and contact links (GitHub, LinkedIn, X/Twitter, Instagram, email).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_projects",
+        "title": "List projects",
+        "description": "List public portfolio projects with title, description, tags, category, GitHub URL, and demo URL. Supports optional filtering by category, tag, featured-only, and a text search over title and description.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "category": {
+              "description": "Filter by category, e.g. 'AI / ML', 'Quantum Computing', 'Full Stack'.",
+              "type": "string"
+            },
+            "tag": {
+              "description": "Filter to projects containing this tag (case-insensitive).",
+              "type": "string"
+            },
+            "featured": {
+              "description": "If true, return only featured projects.",
+              "type": "boolean"
+            },
+            "search": {
+              "description": "Case-insensitive substring match against title and description.",
+              "type": "string"
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_experience",
+        "title": "List experience",
+        "description": "List the portfolio owner's work, research, academic, and education experience entries. Optionally filter by type.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "type": {
+              "description": "Filter to a single experience type.",
+              "type": "string",
+              "enum": [
+                "work",
+                "research",
+                "academic",
+                "education"
+              ]
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_skills",
+        "title": "List skills",
+        "description": "Return the portfolio owner's public technical skill groups, each with a set of named skills and self-rated proficiency levels (0–100).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_services",
+        "title": "List services",
+        "description": "Return the services the portfolio owner offers, each with a title and short description.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
